@@ -1,4 +1,4 @@
-package com.newjirasystem.app.entity;
+package com.newjirasystem.app.proyectos;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

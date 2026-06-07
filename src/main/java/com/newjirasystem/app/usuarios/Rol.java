@@ -1,4 +1,4 @@
-package com.newjirasystem.app.entity;
+package com.newjirasystem.app.usuarios;
 
 public enum Rol {
     ADMIN,

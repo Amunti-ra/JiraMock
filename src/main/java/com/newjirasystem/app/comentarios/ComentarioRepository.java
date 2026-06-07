@@ -1,6 +1,5 @@
-package com.newjirasystem.app.repository;
+package com.newjirasystem.app.comentarios;
 
-import com.newjirasystem.app.entity.Comentario;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ComentarioRepository extends JpaRepository<Comentario, Long> {

@@ -1,6 +1,5 @@
-package com.newjirasystem.app.repository;
+package com.newjirasystem.app.tickets;
 
-import com.newjirasystem.app.entity.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

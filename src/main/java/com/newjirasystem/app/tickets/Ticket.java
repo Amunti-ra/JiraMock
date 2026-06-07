@@ -1,5 +1,7 @@
-package com.newjirasystem.app.entity;
+package com.newjirasystem.app.tickets;
 
+import com.newjirasystem.app.proyectos.Proyecto;
+import com.newjirasystem.app.usuarios.Usuario;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

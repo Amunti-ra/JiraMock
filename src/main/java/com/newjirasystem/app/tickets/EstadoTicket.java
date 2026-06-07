@@ -1,4 +1,4 @@
-package com.newjirasystem.app.entity;
+package com.newjirasystem.app.tickets;
 
 public enum EstadoTicket {
     POR_HACER(1),
