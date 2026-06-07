@@ -9,6 +9,7 @@ public record CrearTicketDTO(@NotBlank(message = "El título es obligatorio")
                              String titulo,
 
                              String descripcion,
+
                              @NotNull(message = "El ID del creador es obligatorio")
                              Long idCreador,
 

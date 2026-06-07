@@ -38,7 +38,7 @@ public class TicketService {
             case 2 -> TipoTicket.BUG;
             case 3 -> TipoTicket.TAREA;
             case 4 -> TipoTicket.EPICA;
-            default -> null;
+            default -> throw new IllegalArgumentException("Tipo inválido");
         };
 
 
@@ -48,7 +48,7 @@ public class TicketService {
             case 2 -> PrioridadTicket.MEDIUM;
             case 3 -> PrioridadTicket.HIGH;
             case 4 -> PrioridadTicket.BLOCKER;
-            default -> null;
+            default -> throw new IllegalArgumentException("Tipo inválido");
         };
 
 
@@ -75,22 +75,6 @@ public class TicketService {
 
         // guarda el proyecto, ya que se aumentó el nº de tickets
         this.proyectosRepository.save(proyecto);
-
-
-        // sacando los datos para construir el TicketCreadoDTO
-        // EDIT : se podía hacer directo al crear el DTO
-
-        /*Long idTicketCreado = ticketGuardado.getId();
-        String claveTicketCreado = ticketGuardado.getClave();
-        Long tipoTicketCreado = (long) ticketGuardado.getTipo().getId();
-        Long estadoTicketCreado = (long) ticketGuardado.getEstado().getId();
-        Long prioridadTicketCreado = (long) ticketGuardado.getPrioridad().getId();
-        String proyectoTicketCreado = ticketGuardado.getProyecto().getNombre();
-        String creadorTicketCreado = ticketGuardado.getCreador().getNombre();
-        String tituloTicketCreado = ticketGuardado.getTitulo();
-        String descripcionTicketCreado = ticketGuardado.getDescripcion();
-        LocalDateTime fechaCreacionTicketCreado = ticketGuardado.getFechaCreacion();*/
-
 
         return new TicketCreadoDTO(
                 ticketGuardado.getId(),

@@ -26,9 +26,11 @@ public class Ticket {
     private Proyecto proyecto;
 
     @ManyToOne
+    @JoinColumn(name = "id_proyecto", nullable = false)
     private Usuario creador;
 
     @ManyToOne
+    @JoinColumn(name = "id_asignado")
     private Usuario asignado;
 
     private String titulo;
@@ -58,10 +60,6 @@ public class Ticket {
     // getters y setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getClave() {
@@ -139,11 +137,6 @@ public class Ticket {
     public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
-
-    // no debería poder cambiarse la fecha de creacion.
-//    public void setFechaCreacion(LocalDateTime fechaCreacion) {
-//        this.fechaCreacion = fechaCreacion;
-//    }
 
     public LocalDateTime getFechaCompletado() {
         return fechaCompletado;
