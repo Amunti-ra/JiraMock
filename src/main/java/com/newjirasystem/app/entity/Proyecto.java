@@ -11,11 +11,13 @@ public class Proyecto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String nombre;
+    private String codigoProyecto;
+    private int contadorTickets = 0;
 
-    public Proyecto(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    public Proyecto(String nombre, String codigoProyecto) {
+        this.nombre = nombre;
+        this.codigoProyecto = codigoProyecto;
     }
 
     protected Proyecto() {}
@@ -24,15 +26,31 @@ public class Proyecto {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
+
+    public String getNombre() {
+        return nombre;
     }
 
-    public String getName() {
-        return name;
+    public void setNombre(String name) {
+        this.nombre = name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getCodigoProyecto() {
+        return codigoProyecto;
+    }
+
+    public void setCodigoProyecto(String codigoProyecto) {
+        this.codigoProyecto = codigoProyecto;
+    }
+
+    public int getContadorTickets() {
+        return contadorTickets;
+    }
+
+    public void setContadorTickets(int contadorTickets) {
+        this.contadorTickets = contadorTickets;
     }
 }

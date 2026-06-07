@@ -26,7 +26,7 @@ public class Ticket {
     private Proyecto proyecto;
 
     @ManyToOne
-    private Usuario duenio;
+    private Usuario creador;
 
     @ManyToOne
     private Usuario asignado;
@@ -40,14 +40,14 @@ public class Ticket {
     // constructor vacio y con datos
     protected Ticket() {}
 
-    public Ticket(String clave, TipoTicket tipo, EstadoTicket estado, PrioridadTicket prioridad, Proyecto proyecto, Usuario duenio, Usuario asignado, String titulo, String descripcion) {
+    public Ticket(String clave, TipoTicket tipo, PrioridadTicket prioridad, Proyecto proyecto, Usuario creador, String titulo, String descripcion) {
         this.clave = clave;
         this.tipo = tipo;
-        this.estado = estado;
+        this.estado = EstadoTicket.POR_HACER;
         this.prioridad = prioridad;
         this.proyecto = proyecto;
-        this.duenio = duenio;
-        this.asignado = asignado;
+        this.creador = creador;
+        this.asignado = null;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fechaCompletado = null;
@@ -104,12 +104,12 @@ public class Ticket {
         this.proyecto = proyecto;
     }
 
-    public Usuario getDuenio() {
-        return duenio;
+    public Usuario getCreador() {
+        return creador;
     }
 
-    public void setDuenio(Usuario duenio) {
-        this.duenio = duenio;
+    public void setCreador(Usuario duenio) {
+        this.creador = duenio;
     }
 
     public Usuario getAsignado() {

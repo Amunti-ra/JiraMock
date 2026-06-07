@@ -1,6 +1,5 @@
 package com.newjirasystem.app.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 @Entity
