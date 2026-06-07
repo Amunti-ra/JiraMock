@@ -1,28 +1,31 @@
-package com.newjirasystem.app.service;
+package com.newjirasystem.app.tickets;
 
-import com.newjirasystem.app.dto.CrearTicketDTO;
-import com.newjirasystem.app.dto.TicketCreadoDTO;
-import com.newjirasystem.app.entity.*;
-import com.newjirasystem.app.repository.ProyectosRepository;
-import com.newjirasystem.app.repository.TicketsRepository;
-import com.newjirasystem.app.repository.UsuariosRepository;
+import com.newjirasystem.app.proyectos.Proyecto;
+import com.newjirasystem.app.proyectos.ProyectosRepository;
+import com.newjirasystem.app.usuarios.Usuario;
+import com.newjirasystem.app.usuarios.UsuariosRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TicketService {
     private final UsuariosRepository usuariosRepository;
     private final TicketsRepository ticketsRepository;
     private final ProyectosRepository proyectosRepository;
+    private final TicketMapper ticketMapper;
 
-    public TicketService(UsuariosRepository usuariosRepository, TicketsRepository ticketsRepository, ProyectosRepository proyectosRepository) {
+    public TicketService(UsuariosRepository usuariosRepository, TicketsRepository ticketsRepository, ProyectosRepository proyectosRepository, TicketMapper ticketMapper) {
         this.usuariosRepository = usuariosRepository;
         this.ticketsRepository = ticketsRepository;
         this.proyectosRepository = proyectosRepository;
+        this.ticketMapper = ticketMapper;
     }
 
-    public TicketCreadoDTO crearTicket(CrearTicketDTO crearTicketDTO) {
+    public TicketDTO crearTicket(CrearTicketDTO crearTicketDTO) {
         // saca datos del dto
         String titulo = crearTicketDTO.titulo();
         String descripcion = crearTicketDTO.descripcion();
@@ -76,17 +79,20 @@ public class TicketService {
         // guarda el proyecto, ya que se aumentó el nº de tickets
         this.proyectosRepository.save(proyecto);
 
-        return new TicketCreadoDTO(
-                ticketGuardado.getId(),
-                ticketGuardado.getTitulo(),
-                ticketGuardado.getDescripcion(),
-                ticketGuardado.getClave(),
-                ticketGuardado.getProyecto().getNombre(),
-                (long) ticketGuardado.getTipo().getId(),
-                (long) ticketGuardado.getEstado().getId(),
-                (long) ticketGuardado.getPrioridad().getId(),
-                ticketGuardado.getCreador().getNombre(),
-                ticketGuardado.getFechaCreacion()
-        );
+        return new TicketMapper().toTicketDTO(ticketGuardado);
+    }
+
+    public List<TicketDTO> getTickets() {
+
+        List<Ticket> listaTicket = ticketsRepository.findAll();
+
+        return listaTicket.stream()
+                .map(this.ticketMapper::toTicketDTO)
+                .toList();
+    }
+
+    public Optional<TicketDTO> getTicketById(Long id) {
+        return ticketsRepository.findById(id)
+                .map(this.ticketMapper::toTicketDTO);
     }
 }
