@@ -4,7 +4,9 @@ import com.newjirasystem.app.proyectos.Proyecto;
 import com.newjirasystem.app.proyectos.ProyectosRepository;
 import com.newjirasystem.app.usuarios.Usuario;
 import com.newjirasystem.app.usuarios.UsuariosRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,7 +25,7 @@ public class TicketService {
         this.ticketMapper = ticketMapper;
     }
 
-    public TicketDTO crearTicket(CrearTicketDTO crearTicketDTO) {
+    public TicketDTO postTicket(CrearTicketDTO crearTicketDTO) {
         // saca datos del dto
         String titulo = crearTicketDTO.titulo();
         String descripcion = crearTicketDTO.descripcion();
@@ -127,5 +129,14 @@ public class TicketService {
         Ticket ticketActualizado = this.ticketsRepository.save(ticket);
 
         return new TicketMapper().toTicketDTO(ticketActualizado);
+    }
+
+    public void deleteTicketById(Long id) {
+        Ticket ticket = this.ticketsRepository.findByIdAndEstadoNot(id, EstadoTicket.BORRADO)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado"));
+
+        ticket.setEstado(EstadoTicket.BORRADO);
+
+        this.ticketsRepository.save(ticket);
     }
 }

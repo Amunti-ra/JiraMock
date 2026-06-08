@@ -52,8 +52,8 @@ public class TicketController {
      * @return TicketDTO y respuesta HTTP 201 creado.
      */
     @PostMapping
-    public ResponseEntity<TicketDTO> crearTicket(@Valid @RequestBody CrearTicketDTO ticket) {
-        TicketDTO ticketCreado = ticketService.crearTicket(ticket);
+    public ResponseEntity<TicketDTO> postTicket(@Valid @RequestBody CrearTicketDTO ticket) {
+        TicketDTO ticketCreado = ticketService.postTicket(ticket);
 
         return new ResponseEntity<>(ticketCreado, HttpStatus.CREATED);
     }
@@ -64,5 +64,12 @@ public class TicketController {
         TicketDTO ticketActualizado = ticketService.putTicketById(id, actualizarTicketDTO);
 
         return new ResponseEntity<>(ticketActualizado, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTicketById(@PathVariable Long id) {
+        ticketService.deleteTicketById(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
