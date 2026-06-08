@@ -26,18 +26,25 @@ public class Comentario {
     @JoinColumn(name = "author_id", nullable = false)
     private Usuario autor;
 
+    private boolean activo;
+
     // Constructores vacio y full
     protected Comentario() {}
 
     // fecha es generada automáticamente
-    public Comentario(String texto, LocalDateTime fechaCreacion, LocalDateTime fechaEditado, Ticket ticket, Usuario autor) {
+    public Comentario(String texto, Ticket ticket, Usuario autor) {
         this.texto = texto;
         this.fechaCreacion = LocalDateTime.now();
         this.fechaEditado = null;
         this.ticket = ticket;
         this.autor = autor;
+        this.activo = true;
     }
 
+
+    public void eliminarLogicamente() {
+        this.activo = false;
+    }
 
     // Getters y setters
     public Long getId() {
@@ -69,5 +76,9 @@ public class Comentario {
 
     public Usuario getAutor() {
         return autor;
+    }
+
+    public boolean isActivo() {
+        return activo;
     }
 }
