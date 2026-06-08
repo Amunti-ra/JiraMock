@@ -1,5 +1,6 @@
 package com.newjirasystem.app.tickets;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -51,9 +52,17 @@ public class TicketController {
      * @return TicketDTO y respuesta HTTP 201 creado.
      */
     @PostMapping
-    public ResponseEntity<TicketDTO> crearTicket(@RequestBody CrearTicketDTO ticket) {
+    public ResponseEntity<TicketDTO> crearTicket(@Valid @RequestBody CrearTicketDTO ticket) {
         TicketDTO ticketCreado = ticketService.crearTicket(ticket);
 
         return new ResponseEntity<>(ticketCreado, HttpStatus.CREATED);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TicketDTO> putTicketById(@PathVariable Long id, @Valid @RequestBody ActualizarTicketDTO actualizarTicketDTO) {
+        TicketDTO ticketActualizado = ticketService.putTicketById(id, actualizarTicketDTO);
+
+        return new ResponseEntity<>(ticketActualizado, HttpStatus.OK);
     }
 }

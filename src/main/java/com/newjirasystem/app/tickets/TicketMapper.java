@@ -19,8 +19,8 @@ public class TicketMapper {
         }
 
         String asignadoA = null;
-        if (ticket.getIdAsignado() != null) {
-            asignadoA = ticket.getIdAsignado().getNombre();
+        if (ticket.getAsignado() != null) {
+            asignadoA = ticket.getAsignado().getNombre();
         }
 
         return new TicketDTO(

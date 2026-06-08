@@ -77,4 +77,55 @@ public class TicketService {
         return ticketsRepository.findById(id)
                 .map(this.ticketMapper::toTicketDTO);
     }
+
+    /**
+     * Actualiza un ticket ya existente buscándolo por su ID con los datos de ActualizarTicketDTO.
+     * Si algún campo del ActualizarTicketDTO es null, ese campo no será actualizado en el ticket.
+     * Updates an existing ticket identified by its ID with the provided data from the ActualizarTicketDTO.
+     * If a field in the ActualizarTicketDTO is null, that field will not be updated in the ticket.
+     *
+     * @param id  ID del ticket a actualizar
+     * @param dto un objeto ActualizarTicketDTO que contendrá los datos a actualizar
+     * @return un TicketDTO reprensentando el ticket con los datos actualizados
+     * @throws RuntimeException si el ID del ticket o el ID del usuario al que se asigna el ticket
+*                               no se encuentran
+     */
+    public TicketDTO putTicketById(Long id, ActualizarTicketDTO dto) {
+
+        // obtiene el ticket por ID
+        Ticket ticket = ticketsRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Ticket no encontrado con el id: " + id));
+
+        // comprueba si los datos del ActualizarTicketDTO están presentes para
+        // actualizarlos en el Ticket
+        if (dto.titulo() != null) {
+            ticket.setTitulo(dto.titulo());
+        }
+
+        if (dto.descripcion() != null) {
+            ticket.setDescripcion(dto.descripcion());
+        }
+
+        if (dto.idAsignado() != null) {
+            ticket.setAsignado(this.usuariosRepository.findById(dto.idAsignado())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado")));
+        }
+
+        if (dto.estado() != null) {
+            ticket.setEstado(EstadoTicket.valueOf(dto.estado()));
+        }
+
+        if (dto.prioridad() != null) {
+            ticket.setPrioridad(PrioridadTicket.valueOf(dto.prioridad()));
+        }
+
+        if (dto.tipo() != null) {
+            ticket.setTipo(TipoTicket.valueOf(dto.tipo()));
+        }
+
+        // guarda el ticket actualizado y lo almacena para crear un TicketDTO de respuesta
+        Ticket ticketActualizado = this.ticketsRepository.save(ticket);
+
+        return new TicketMapper().toTicketDTO(ticketActualizado);
+    }
 }
