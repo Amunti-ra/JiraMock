@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public record ComentarioDTO(Long id,
                             String texto,
-                            String ticket,
+                            Long ticket,
                             String nombreAutor,
                             LocalDateTime fechaCreacion,
                             LocalDateTime fechaEditado) {
