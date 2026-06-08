@@ -2,6 +2,7 @@ package com.newjirasystem.app.tickets;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 public record CrearTicketDTO(@NotBlank(message = "El título es obligatorio")
@@ -16,5 +17,9 @@ public record CrearTicketDTO(@NotBlank(message = "El título es obligatorio")
                              @NotNull(message = "El ID del proyecto es obligatorio")
                              Long idPoryecto,
 
-                             String prioridad, String tipo) {
+                             @Pattern(regexp = "LOW|MEDIUM|HIGH|BLOCKER", message = "La prioridad debe ser LOW, MEDIUM, HIGH o BLOCKER")
+                             String prioridad,
+
+                             @Pattern(regexp = "EPICO|TAREA|BUG|SUBTAREA", message = "El tipo debe ser SUBTAREA, TAREA, BUG o EPICO")
+                             String tipo) {
 }
