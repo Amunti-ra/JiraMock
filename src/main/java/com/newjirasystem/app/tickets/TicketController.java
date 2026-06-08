@@ -48,14 +48,14 @@ public class TicketController {
     }
 
     /**
-     * Crea un ticket.
+     * Crea un nuevo ticket en el sistema basado en los detalles proporcionados.
      *
-     * Recibe en el request body los detalles para crear un ticket, recibe del TicketService un
-     * TicketDTO para poder devolver con todos los detalles el nuevo ticket creado junto con la
-     * respuesta HTTP
+     * @param ticket los detalles del ticket a crear, encapsulados en un {@link CrearTicketDTO}.
+     * Este objeto debe ser válido e incluir los campos obligatorios como el título,
+     * el id del creador, el id del proyecto y, opcionalmente, la prioridad y el tipo.
      *
-     * @param ticket
-     * @return TicketDTO y respuesta HTTP 201 creado.
+     * @return un {@link ResponseEntity} que contiene el ticket creado como un {@link TicketDTO}
+     * con un estado 201 CREATED.
      */
     @PostMapping
     public ResponseEntity<TicketDTO> postTicket(@Valid @RequestBody CrearTicketDTO ticket) {
