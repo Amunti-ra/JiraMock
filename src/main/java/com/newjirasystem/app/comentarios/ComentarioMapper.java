@@ -1,6 +1,5 @@
 package com.newjirasystem.app.comentarios;
 
-import com.newjirasystem.app.tickets.Ticket;
 import org.springframework.stereotype.Service;
 
 @Service
