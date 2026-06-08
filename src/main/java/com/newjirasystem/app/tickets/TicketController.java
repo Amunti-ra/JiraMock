@@ -82,7 +82,7 @@ public class TicketController {
     // mappings que dependen de un ticket pero son de otros componentes
 
     @PostMapping("/{idTicket}/comentarios")
-    public ResponseEntity<ComentarioDTO> postComentario(@PathVariable Long idTicket, @RequestBody CrearComentarioDTO dto) {
+    public ResponseEntity<ComentarioDTO> postComentario(@PathVariable Long idTicket, @Valid @RequestBody CrearComentarioDTO dto) {
         ComentarioDTO comentarioCreado = comentarioService.postComentario(idTicket, dto);
 
         return new ResponseEntity<>(comentarioCreado, HttpStatus.CREATED);
