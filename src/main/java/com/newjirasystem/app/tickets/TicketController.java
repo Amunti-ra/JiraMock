@@ -36,9 +36,9 @@ public class TicketController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TicketDTO> getTicketById(@PathVariable Long id) {
-        return ticketService.getTicketById(id)
-                .map(ticketDTO -> new ResponseEntity<>(ticketDTO, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+        TicketDTO ticket = ticketService.getTicketById(id);
+
+        return new ResponseEntity<>(ticket, HttpStatus.OK);
     }
 
     /**
