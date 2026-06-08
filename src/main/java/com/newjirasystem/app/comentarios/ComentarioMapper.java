@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ComentarioMapper {
-    public ComentarioDTO toTicketDTO(Comentario comentario) {
+    public ComentarioDTO toComentarioDTO(Comentario comentario) {
         if (comentario == null) {
             return null;
         }
