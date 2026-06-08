@@ -16,6 +16,8 @@ public class Comentario {
 
     private LocalDateTime fechaCreacion;
 
+    private LocalDateTime fechaEditado;
+
     @ManyToOne
     @JoinColumn(name = "ticket_id", nullable = false)
     private Ticket ticket;
@@ -26,9 +28,9 @@ public class Comentario {
 
     // Constructores vacio y full
     protected Comentario() {}
+
     // fecha es generada automáticamente
-    public Comentario(Long id, String texto, Ticket ticket, Usuario autor) {
-        this.id = id;
+    public Comentario(String texto, Ticket ticket, Usuario autor) {
         this.texto = texto;
         this.fechaCreacion = LocalDateTime.now();
         this.ticket = ticket;
@@ -45,29 +47,26 @@ public class Comentario {
         return texto;
     }
 
-    public void setTexto(String texto) {
+    // para evitar cambiar el texto sin modificar la fecha de edición, incluye cambio en fecha de editado
+    // sustituye setTexto
+    public void editarTexto(String texto) {
         this.texto = texto;
+        this.fechaEditado = LocalDateTime.now();
     }
 
     public LocalDateTime getFechaCreacion() {
         return fechaCreacion;
     }
 
+    public LocalDateTime getFechaEditado() {
+        return fechaEditado;
+    }
+
     public Ticket getTicket() {
         return ticket;
     }
 
-    // debería poder moverse el comentario a otro ticket?
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
-    }
-
     public Usuario getAutor() {
         return autor;
-    }
-
-    // debería poder cambiar el autor?
-    public void setAutor(Usuario autor) {
-        this.autor = autor;
     }
 }
