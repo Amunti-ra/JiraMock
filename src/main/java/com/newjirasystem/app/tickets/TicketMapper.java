@@ -1,13 +1,10 @@
 package com.newjirasystem.app.tickets;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TicketMapper {
     /**
-     * Método toTicketDTO
-     *
      * Recibe un ticket y lo transforma en un TicketDTO para poder pasarlo al TicketController con
      * los datos que se quieren hacer visibles al front end.
      *
@@ -22,8 +19,8 @@ public class TicketMapper {
         }
 
         String asignadoA = null;
-        if (ticket.getAsignado() != null) {
-            asignadoA = ticket.getAsignado().getNombre();
+        if (ticket.getIdAsignado() != null) {
+            asignadoA = ticket.getIdAsignado().getNombre();
         }
 
         return new TicketDTO(
@@ -32,9 +29,9 @@ public class TicketMapper {
                 ticket.getDescripcion(),
                 ticket.getClave(),
                 ticket.getProyecto().getNombre(),
-                (long) ticket.getTipo().getId(),
-                (long) ticket.getEstado().getId(),
-                (long) ticket.getPrioridad().getId(),
+                ticket.getTipo().toString(),
+                ticket.getEstado().toString(),
+                ticket.getPrioridad().toString(),
                 ticket.getCreador().getNombre(),
                 asignadoA,
                 ticket.getFechaCreacion()

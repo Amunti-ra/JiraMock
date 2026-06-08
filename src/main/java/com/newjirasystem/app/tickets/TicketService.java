@@ -4,10 +4,8 @@ import com.newjirasystem.app.proyectos.Proyecto;
 import com.newjirasystem.app.proyectos.ProyectosRepository;
 import com.newjirasystem.app.usuarios.Usuario;
 import com.newjirasystem.app.usuarios.UsuariosRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,29 +29,12 @@ public class TicketService {
         String descripcion = crearTicketDTO.descripcion();
         Long idCreador = crearTicketDTO.idCreador();
         Long idProyecto = crearTicketDTO.idPoryecto();
-        int prioridad = crearTicketDTO.prioridad();
-        int tipo = crearTicketDTO.tipo();
+        String prioridad = crearTicketDTO.prioridad();
+        String tipo = crearTicketDTO.tipo();
 
-
-        // asigna de número a tipo de ticket
-        TipoTicket tipoTicket = switch (tipo) {
-            case 1 -> TipoTicket.SUBTAREA;
-            case 2 -> TipoTicket.BUG;
-            case 3 -> TipoTicket.TAREA;
-            case 4 -> TipoTicket.EPICA;
-            default -> throw new IllegalArgumentException("Tipo inválido");
-        };
-
-
-        // asigna de número a prioridad
-        PrioridadTicket prioridadTicket = switch (prioridad) {
-            case 1 -> PrioridadTicket.LOW;
-            case 2 -> PrioridadTicket.MEDIUM;
-            case 3 -> PrioridadTicket.HIGH;
-            case 4 -> PrioridadTicket.BLOCKER;
-            default -> throw new IllegalArgumentException("Tipo inválido");
-        };
-
+        // transforma la string al enum de tipo y prioridad
+        TipoTicket tipoTicket = TipoTicket.valueOf(tipo);
+        PrioridadTicket prioridadTicket = PrioridadTicket.valueOf(prioridad);
 
         // busca al usuario creado y al proyecto al que se asignará el ticket
         Usuario creador = this.usuariosRepository.findById(idCreador).orElseThrow();
@@ -79,6 +60,7 @@ public class TicketService {
         // guarda el proyecto, ya que se aumentó el nº de tickets
         this.proyectosRepository.save(proyecto);
 
+        // mapea el ticket a un ticketDTO para devolverlo al front
         return new TicketMapper().toTicketDTO(ticketGuardado);
     }
 
