@@ -30,9 +30,10 @@ public class Comentario {
     protected Comentario() {}
 
     // fecha es generada automáticamente
-    public Comentario(String texto, Ticket ticket, Usuario autor) {
+    public Comentario(String texto, LocalDateTime fechaCreacion, LocalDateTime fechaEditado, Ticket ticket, Usuario autor) {
         this.texto = texto;
         this.fechaCreacion = LocalDateTime.now();
+        this.fechaEditado = null;
         this.ticket = ticket;
         this.autor = autor;
     }
