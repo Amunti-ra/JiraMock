@@ -1,5 +1,8 @@
 package com.newjirasystem.app.tickets;
 
+import com.newjirasystem.app.comentarios.ComentarioDTO;
+import com.newjirasystem.app.comentarios.ComentarioService;
+import com.newjirasystem.app.comentarios.CrearComentarioDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,11 +15,14 @@ import java.util.List;
 public class TicketController {
 
     private final TicketService ticketService;
+    private final ComentarioService comentarioService;
 
-    public TicketController(TicketService ticketService) {
+    public TicketController(TicketService ticketService, ComentarioService comentarioService) {
         this.ticketService = ticketService;
+        this.comentarioService = comentarioService;
     }
 
+    // mappings de tickets
     /**
      * Obtiene una lista con los tickets de la base de datos en forma de TicketDTO
      *
@@ -58,7 +64,6 @@ public class TicketController {
         return new ResponseEntity<>(ticketCreado, HttpStatus.CREATED);
     }
 
-
     @PutMapping("/{id}")
     public ResponseEntity<TicketDTO> putTicketById(@PathVariable Long id, @Valid @RequestBody ActualizarTicketDTO actualizarTicketDTO) {
         TicketDTO ticketActualizado = ticketService.putTicketById(id, actualizarTicketDTO);
@@ -72,4 +77,20 @@ public class TicketController {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+
+    // mappings que dependen de un ticket pero son de otros componentes
+
+    @PostMapping("/{idTicket}/comentarios")
+    public ResponseEntity<ComentarioDTO> postComentario(@PathVariable Long idTicket, @RequestBody CrearComentarioDTO dto) {
+        ComentarioDTO comentarioCreado = comentarioService.postComentario(idTicket, dto);
+
+        return new ResponseEntity<>(comentarioCreado, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{idTicket}/comentarios")
+    public List<ComentarioDTO> getComentariosByTicketId(@PathVariable Long idTicket) {
+        return comentarioService.getComenatariosByTicketId(idTicket);
+    }
+
 }
