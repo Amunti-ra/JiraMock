@@ -154,4 +154,8 @@ public class Ticket {
     public void setFechaCompletado(LocalDateTime fechaCompletado) {
         this.fechaCompletado = fechaCompletado;
     }
+
+    public boolean isActivo() {
+        return activo;
+    }
 }
