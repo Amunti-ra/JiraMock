@@ -21,8 +21,7 @@ public class Usuario {
     // Constructores vacio y full
     protected Usuario() {}
 
-    public Usuario(Long id, String nombre, Rol rol, String telefono) {
-        this.id = id;
+    public Usuario(String nombre, Rol rol, String telefono) {
         this.nombre = nombre;
         this.rol = rol;
         this.telefono = telefono;
