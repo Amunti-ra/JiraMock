@@ -1,0 +1,5 @@
+# Configuración de la Base de Datos de ejemplo
+spring.datasource.url=jdbc:mysql://localhost:3306/tu_base_datos
+spring.datasource.username=TU_USUARIO_AQUÍ
+spring.datasource.password=TU_CONTRASEÑA_AQUÍ
+spring.jpa.hibernate.ddl-auto=update
