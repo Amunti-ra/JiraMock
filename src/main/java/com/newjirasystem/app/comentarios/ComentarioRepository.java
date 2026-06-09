@@ -9,6 +9,8 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Long> {
 
     List<Comentario> findByTicketIdAndActivoTrue(Long id);
 
+    List<Comentario> findByAutorIdAndActivoTrue(Long idAutor);
+
     Optional<Comentario> findByIdAndActivoTrue(Long id);
 
 }
