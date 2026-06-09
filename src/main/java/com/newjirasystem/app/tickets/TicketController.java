@@ -31,7 +31,8 @@ public class TicketController {
     @GetMapping
     public ResponseEntity<List<TicketDTO>> getTickets(@RequestParam(required = false) Long asignadoId,
                                                       @RequestParam(required = false) Long proyectoId,
-                                                      @RequestParam(required = false) String prioridad) {
+                                                      @RequestParam(required = false) String prioridad,
+                                                      @RequestParam(required = false) String estado) {
 
         if (asignadoId != null) {
             return new ResponseEntity<>(ticketService.getTicketsByAsignadoId(asignadoId), HttpStatus.OK);
@@ -43,6 +44,10 @@ public class TicketController {
 
         if (prioridad != null) {
             return new ResponseEntity<>(ticketService.getTicketsByPrioridad(prioridad), HttpStatus.OK);
+        }
+
+        if (estado != null) {
+            return new ResponseEntity<>(ticketService.getTicketsByEstado(estado), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(ticketService.getTickets(), HttpStatus.OK);
