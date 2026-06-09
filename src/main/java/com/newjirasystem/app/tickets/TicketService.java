@@ -47,11 +47,10 @@ public class TicketService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El proyecto asignado no existe"));
 
 
-        // saca el número actual de tickets del proyecto, le suma 1, actualiza el número de tickets
-        // y usa el nuevo número para generar la clave del ticket
-        int siguienteNumero = proyecto.getContadorTickets() + 1;
-        proyecto.setContadorTickets(siguienteNumero);
-        String clave = proyecto.getCodigoProyecto() + "-" + siguienteNumero;
+        // clave del proyecto y suma uno al número de tickets actual (ex:JIRA-1)
+        String clave = proyecto.getCodigoProyecto() + "-" + (proyecto.getContadorTickets() + 1);
+
+        proyecto.aumentarContador();
 
         // guarda el proyecto, ya que se aumentó el nº de tickets
         this.proyectosRepository.save(proyecto);

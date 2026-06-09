@@ -46,7 +46,7 @@ public class Proyecto {
         return contadorTickets;
     }
 
-    public void setContadorTickets(int contadorTickets) {
-        this.contadorTickets = contadorTickets;
+    public void aumentarContador() {
+        this.contadorTickets++;
     }
 }

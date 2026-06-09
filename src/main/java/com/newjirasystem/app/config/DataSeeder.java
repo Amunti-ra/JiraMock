@@ -94,13 +94,15 @@ public class DataSeeder implements CommandLineRunner {
         EstadoTicket[] estados = EstadoTicket.values();
 
         for (int i = 0; i < 30; i++) {
-            String clave = "TICKET-" + (i + 1);
             TipoTicket tipoRandom = tipos[random.nextInt(tipos.length)];
             PrioridadTicket prioridadRandom = prioridades[random.nextInt(prioridades.length)];
             Proyecto proyectoRandom = proyectos.get(random.nextInt(proyectos.size()));
             Usuario creadorRandom = usuarios.get(random.nextInt(usuarios.size()));
             String titulo = faker.book().title();
             String descripcion = faker.lorem().characters(100);
+            String clave = proyectoRandom.getCodigoProyecto() + "-" + (proyectoRandom.getContadorTickets() + 1);
+
+            proyectoRandom.aumentarContador();
 
             // Uso del constructor completo de Ticket
             Ticket ticket = new Ticket(
