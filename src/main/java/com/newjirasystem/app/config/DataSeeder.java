@@ -73,9 +73,11 @@ public class DataSeeder implements CommandLineRunner {
     private List<Proyecto> crearProyectos(Faker faker) {
         List<Proyecto> proyectos = new ArrayList<>();
 
+        String[] codigos = {"DAM", "DAW", "ASIR", "JIRA", "IDK"};
+
         for (int i = 0; i < 5; i++) {
             String nombre = faker.company().name();
-            String codigo = "PROJ-" + (i + 1);
+            String codigo = codigos[i];
 
             // Uso del constructor: Proyecto(String nombre, String codigoProyecto)
             Proyecto proyecto = new Proyecto(nombre, codigo);
