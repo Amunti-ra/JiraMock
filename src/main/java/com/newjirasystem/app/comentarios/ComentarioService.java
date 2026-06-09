@@ -40,6 +40,8 @@ public class ComentarioService {
 
         Comentario comentario = new Comentario(texto, ticketComentario, usuarioAutor);
 
+        this.comentarioRepository.save(comentario);
+
         return this.comentarioMapper.toComentarioDTO(comentario);
     }
 
@@ -63,12 +65,11 @@ public class ComentarioService {
         return this.comentarioMapper.toComentarioDTO(comentario);
     }
 
+    @Transactional
     public void deleteComentario(Long id) {
         Comentario comentario = this.comentarioRepository.findByIdAndActivoTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El comentario no existe"));
 
         comentario.eliminarLogicamente();
-
-        this.comentarioRepository.save(comentario);
     }
 }
