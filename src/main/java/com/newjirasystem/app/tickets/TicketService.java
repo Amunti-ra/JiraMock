@@ -79,13 +79,19 @@ public class TicketService {
     }
 
     public List<TicketDTO> getTicketsByPrioridad(String prioridad) {
-        return this.ticketsRepository.findByPrioridadAndActivoTrue(PrioridadTicket.valueOf(prioridad)).stream()
+        return this.ticketsRepository.findAllByPrioridadAndActivoTrue(PrioridadTicket.valueOf(prioridad)).stream()
                 .map(this.ticketMapper::toTicketDTO)
                 .toList();
     }
 
     public List<TicketDTO> getTicketsByAsignadoId(Long id) {
         return this.ticketsRepository.findAllByAsignadoIdAndActivoTrue(id).stream()
+                .map(this.ticketMapper::toTicketDTO)
+                .toList();
+    }
+
+    public List<TicketDTO> getTicketsByEstado(String estado) {
+        return this.ticketsRepository.findAllByEstadoAndActivoTrue(EstadoTicket.valueOf(estado)).stream()
                 .map(this.ticketMapper::toTicketDTO)
                 .toList();
     }
