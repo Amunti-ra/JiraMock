@@ -29,8 +29,23 @@ public class TicketController {
      * @return lista con los ticketsDTO
      */
     @GetMapping
-    public List<TicketDTO> getTickets() {
-        return ticketService.getTickets();
+    public ResponseEntity<List<TicketDTO>> getTickets(@RequestParam(required = false) Long asignadoId,
+                                                      @RequestParam(required = false) Long proyectoId,
+                                                      @RequestParam(required = false) String prioridad) {
+
+        if (asignadoId != null) {
+            return new ResponseEntity<>(ticketService.getTicketsByAsignadoId(asignadoId), HttpStatus.OK);
+        }
+
+        if (proyectoId != null) {
+            return new ResponseEntity<>(ticketService.getTicketsByProyectoId(proyectoId), HttpStatus.OK);
+        }
+
+        if (prioridad != null) {
+            return new ResponseEntity<>(ticketService.getTicketsByPrioridad(prioridad), HttpStatus.OK);
+        }
+
+        return new ResponseEntity<>(ticketService.getTickets(), HttpStatus.OK);
     }
 
     /**
@@ -92,5 +107,4 @@ public class TicketController {
     public List<ComentarioDTO> getComentariosByTicketId(@PathVariable Long idTicket) {
         return comentarioService.getComenatariosByTicketId(idTicket);
     }
-
 }
