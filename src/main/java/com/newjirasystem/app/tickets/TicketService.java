@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TicketService {
@@ -69,7 +68,7 @@ public class TicketService {
 
     public List<TicketDTO> getTickets() {
 
-        List<Ticket> listaTicket = ticketsRepository.findByEstadoNot(EstadoTicket.BORRADO);
+        List<Ticket> listaTicket = ticketsRepository.findAllByActivoTrue();
 
         return listaTicket.stream()
                 .map(this.ticketMapper::toTicketDTO)
@@ -77,7 +76,7 @@ public class TicketService {
     }
 
     public TicketDTO getTicketById(Long id) {
-        return ticketsRepository.findByIdAndEstadoNot(id, EstadoTicket.BORRADO)
+        return ticketsRepository.findByIdAndActivoTrue(id)
                 .map(this.ticketMapper::toTicketDTO)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado"));
     }
@@ -98,7 +97,7 @@ public class TicketService {
     public TicketDTO putTicketById(Long id, ActualizarTicketDTO dto) {
 
         // obtiene el ticket por ID
-        Ticket ticket = ticketsRepository.findByIdAndEstadoNot(id, EstadoTicket.BORRADO)
+        Ticket ticket = ticketsRepository.findByIdAndActivoTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado"));
 
         // comprueba si los datos del ActualizarTicketDTO están presentes para
@@ -131,12 +130,11 @@ public class TicketService {
         return this.ticketMapper.toTicketDTO(ticket);
     }
 
+    @Transactional
     public void deleteTicketById(Long id) {
-        Ticket ticket = this.ticketsRepository.findByIdAndEstadoNot(id, EstadoTicket.BORRADO)
+        Ticket ticket = this.ticketsRepository.findByIdAndActivoTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado"));
 
-        ticket.setEstado(EstadoTicket.BORRADO);
-
-        this.ticketsRepository.save(ticket);
+        ticket.borrarTicket();
     }
 }

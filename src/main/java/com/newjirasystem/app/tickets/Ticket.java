@@ -41,6 +41,8 @@ public class Ticket {
     private LocalDateTime fechaCreacion;
     private LocalDateTime fechaCompletado;
 
+    private boolean activo;
+
     // constructor vacio y con datos
     protected Ticket() {}
 
@@ -56,6 +58,11 @@ public class Ticket {
         this.descripcion = descripcion;
         this.fechaCompletado = null;
         this.fechaCreacion = LocalDateTime.now();
+        this.activo = true;
+    }
+
+    public void borrarTicket() {
+        this.activo = false;
     }
 
 

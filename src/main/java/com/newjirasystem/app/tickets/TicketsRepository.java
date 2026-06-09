@@ -9,7 +9,13 @@ import java.util.Optional;
 @Repository
 public interface TicketsRepository extends JpaRepository<Ticket, Long> {
 
-    List<Ticket> findByEstadoNot(EstadoTicket estado);
+    List<Ticket> findAllByActivoTrue();
 
-    Optional<Ticket> findByIdAndEstadoNot(Long id, EstadoTicket estado);
+    List<Ticket> findAllByProyectoIdAndActivoTrue(Long id);
+
+    List<Ticket> findAllByAsignadoIdAndActivoTrue(Long id);
+
+    List<Ticket> findByPrioridadAndActivoTrue(PrioridadTicket prioridad);
+
+    Optional<Ticket> findByIdAndActivoTrue(Long id);
 }
