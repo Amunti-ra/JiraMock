@@ -6,6 +6,7 @@ import com.newjirasystem.app.usuarios.Usuario;
 import com.newjirasystem.app.usuarios.UsuariosRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class TicketService {
         this.ticketMapper = ticketMapper;
     }
 
+    @Transactional
     public TicketDTO postTicket(CrearTicketDTO crearTicketDTO) {
         // saca datos del dto
         String titulo = crearTicketDTO.titulo();
@@ -52,21 +54,17 @@ public class TicketService {
         proyecto.setContadorTickets(siguienteNumero);
         String clave = proyecto.getCodigoProyecto() + "-" + siguienteNumero;
 
+        // guarda el proyecto, ya que se aumentó el nº de tickets
+        this.proyectosRepository.save(proyecto);
 
         // construye un ticket con los parámetros sacados antes
         Ticket ticket = new Ticket(clave, tipoTicket, prioridadTicket, proyecto, creador, titulo, descripcion);
 
-
-        // guarda el ticket en el respositorio y recibe el ticket guardado para generar
-        // el dto de ticket creado después
-        Ticket ticketGuardado = this.ticketsRepository.save(ticket);
-
-
-        // guarda el proyecto, ya que se aumentó el nº de tickets
-        this.proyectosRepository.save(proyecto);
+        // guarda el ticket en el respositorio
+        this.ticketsRepository.save(ticket);
 
         // mapea el ticket a un ticketDTO para devolverlo al front
-        return this.ticketMapper.toTicketDTO(ticketGuardado);
+        return this.ticketMapper.toTicketDTO(ticket);
     }
 
     public List<TicketDTO> getTickets() {
@@ -96,6 +94,7 @@ public class TicketService {
      * @throws RuntimeException si el ID del ticket o el ID del usuario al que se asigna el ticket
 *                               no se encuentran
      */
+    @Transactional
     public TicketDTO putTicketById(Long id, ActualizarTicketDTO dto) {
 
         // obtiene el ticket por ID
@@ -129,10 +128,7 @@ public class TicketService {
             ticket.setTipo(TipoTicket.valueOf(dto.tipo()));
         }
 
-        // guarda el ticket actualizado y lo almacena para crear un TicketDTO de respuesta
-        Ticket ticketActualizado = this.ticketsRepository.save(ticket);
-
-        return this.ticketMapper.toTicketDTO(ticketActualizado);
+        return this.ticketMapper.toTicketDTO(ticket);
     }
 
     public void deleteTicketById(Long id) {
