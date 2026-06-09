@@ -15,7 +15,9 @@ public interface TicketsRepository extends JpaRepository<Ticket, Long> {
 
     List<Ticket> findAllByAsignadoIdAndActivoTrue(Long id);
 
-    List<Ticket> findByPrioridadAndActivoTrue(PrioridadTicket prioridad);
+    List<Ticket> findAllByPrioridadAndActivoTrue(PrioridadTicket prioridad);
+
+    List<Ticket> findAllByEstadoAndActivoTrue(EstadoTicket estado);
 
     Optional<Ticket> findByIdAndActivoTrue(Long id);
 }
