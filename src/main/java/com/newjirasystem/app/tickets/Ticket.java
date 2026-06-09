@@ -24,11 +24,11 @@ public class Ticket {
     private PrioridadTicket prioridad;
 
     @ManyToOne()
-    @JoinColumn(name = "id_creador", nullable = false)
+    @JoinColumn(name = "id_proyecto", nullable = false)
     private Proyecto proyecto;
 
     @ManyToOne
-    @JoinColumn(name = "id_proyecto", nullable = false)
+    @JoinColumn(name = "id_creador", nullable = false)
     private Usuario creador;
 
     @ManyToOne
