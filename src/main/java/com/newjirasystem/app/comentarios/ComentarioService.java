@@ -6,6 +6,7 @@ import com.newjirasystem.app.usuarios.Usuario;
 import com.newjirasystem.app.usuarios.UsuariosRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class ComentarioService {
         this.comentarioMapper = comentarioMapper;
     }
 
+    @Transactional
     public ComentarioDTO postComentario(Long idTicket, CrearComentarioDTO dto) {
 
         String texto = dto.texto();
@@ -38,9 +40,7 @@ public class ComentarioService {
 
         Comentario comentario = new Comentario(texto, ticketComentario, usuarioAutor);
 
-        Comentario comentarioGuardado = this.comentarioRepository.save(comentario);
-
-        return this.comentarioMapper.toComentarioDTO(comentarioGuardado);
+        return this.comentarioMapper.toComentarioDTO(comentario);
     }
 
     public List<ComentarioDTO> getComenatariosByTicketId(Long id) {
@@ -51,6 +51,7 @@ public class ComentarioService {
                 .toList();
     }
 
+    @Transactional
     public ComentarioDTO patchComentario(Long id, ActualizarComentarioDTO dto) {
         Comentario comentario = this.comentarioRepository.findByIdAndActivoTrue(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentario no encontrado"));
@@ -59,9 +60,7 @@ public class ComentarioService {
 
         comentario.editarTexto(nuevoTexto);
 
-        Comentario comentarioActualizado = this.comentarioRepository.save(comentario);
-
-        return this.comentarioMapper.toComentarioDTO(comentarioActualizado);
+        return this.comentarioMapper.toComentarioDTO(comentario);
     }
 
     public void deleteComentario(Long id) {
