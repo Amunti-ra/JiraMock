@@ -7,11 +7,9 @@ import com.newjirasystem.app.proyectos.Proyecto;
 import com.newjirasystem.app.proyectos.ProyectosRepository;
 import com.newjirasystem.app.usuarios.Usuario;
 import com.newjirasystem.app.usuarios.UsuariosRepository;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
-import org.yaml.snakeyaml.util.EnumUtils;
 
 import java.util.List;
 
@@ -75,6 +73,12 @@ public class TicketService {
                 .toList();
     }
 
+    public TicketDTO getTicketById(Long id) {
+        return ticketsRepository.findByIdAndActivoTrue(id)
+                .map(this.ticketMapper::toTicketDTO)
+                .orElseThrow(() -> new TicketNoEncontradoException(id));
+    }
+
     public List<TicketDTO> getTicketsByProyectoId(Long id) {
         // comprueba que el proyecto exista
         if (!this.proyectosRepository.existsById(id)) {
@@ -109,10 +113,26 @@ public class TicketService {
                 .toList();
     }
 
-    public TicketDTO getTicketById(Long id) {
-        return ticketsRepository.findByIdAndActivoTrue(id)
+    public List<TicketDTO> getFilteredTickets(Long idAsignado, Long idProyecto, PrioridadTicket prioridad, EstadoTicket estado) {
+
+        if (idAsignado != null && !this.usuariosRepository.existsById(idAsignado)) {
+            throw new UsuarioNoEncontradoException(idAsignado);
+        }
+
+        if (idProyecto != null && !this.proyectosRepository.existsById(idProyecto)) {
+            throw new ProyectoNoEncontradoException(idProyecto);
+        }
+
+        Specification<Ticket> spec = Specification.<Ticket>unrestricted()
+                .and(TicketSpecifications.isActivo())
+                .and(TicketSpecifications.getTicketByIdEmpleadoSpec(idAsignado))
+                .and(TicketSpecifications.getTicketByIdProyectoSpec(idProyecto))
+                .and(TicketSpecifications.getTicketByPrioridadSpec(prioridad))
+                .and(TicketSpecifications.getTicketByEstadoSpec(estado));
+
+        return this.ticketsRepository.findAll(spec).stream()
                 .map(this.ticketMapper::toTicketDTO)
-                .orElseThrow(() -> new TicketNoEncontradoException(id));
+                .toList();
     }
 
     /**
