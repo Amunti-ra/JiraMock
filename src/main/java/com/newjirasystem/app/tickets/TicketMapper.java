@@ -7,7 +7,6 @@ public class TicketMapper {
     /**
      * Recibe un ticket y lo transforma en un TicketDTO para poder pasarlo al TicketController con
      * los datos que se quieren hacer visibles al front end.
-     *
      * Revisa si está asignado a alguien, evitar NullPointerException.
      *
      * @param ticket entidad Ticket de la base de datos.
