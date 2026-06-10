@@ -34,23 +34,8 @@ public class TicketController {
                                                       @RequestParam(required = false) PrioridadTicket prioridad,
                                                       @RequestParam(required = false) EstadoTicket estado) {
 
-        if (asignadoId != null) {
-            return new ResponseEntity<>(ticketService.getTicketsByAsignadoId(asignadoId), HttpStatus.OK);
-        }
-
-        if (proyectoId != null) {
-            return new ResponseEntity<>(ticketService.getTicketsByProyectoId(proyectoId), HttpStatus.OK);
-        }
-
-        if (prioridad != null) {
-            return new ResponseEntity<>(ticketService.getTicketsByPrioridad(prioridad), HttpStatus.OK);
-        }
-
-        if (estado != null) {
-            return new ResponseEntity<>(ticketService.getTicketsByEstado(estado), HttpStatus.OK);
-        }
-
-        return new ResponseEntity<>(ticketService.getTickets(), HttpStatus.OK);
+        return ResponseEntity.ok(
+                ticketService.getFilteredTickets(asignadoId, proyectoId, prioridad, estado));
     }
 
     /**
