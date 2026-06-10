@@ -31,8 +31,8 @@ public class TicketController {
     @GetMapping
     public ResponseEntity<List<TicketDTO>> getTickets(@RequestParam(required = false) Long asignadoId,
                                                       @RequestParam(required = false) Long proyectoId,
-                                                      @RequestParam(required = false) String prioridad,
-                                                      @RequestParam(required = false) String estado) {
+                                                      @RequestParam(required = false) PrioridadTicket prioridad,
+                                                      @RequestParam(required = false) EstadoTicket estado) {
 
         if (asignadoId != null) {
             return new ResponseEntity<>(ticketService.getTicketsByAsignadoId(asignadoId), HttpStatus.OK);

@@ -1,5 +1,8 @@
 package com.newjirasystem.app.comentarios;
 
+import com.newjirasystem.app.exception.ComentarioNoEncontradoException;
+import com.newjirasystem.app.exception.TicketNoEncontradoException;
+import com.newjirasystem.app.exception.UsuarioNoEncontradoException;
 import com.newjirasystem.app.tickets.Ticket;
 import com.newjirasystem.app.tickets.TicketsRepository;
 import com.newjirasystem.app.usuarios.Usuario;
@@ -33,10 +36,10 @@ public class ComentarioService {
         String texto = dto.texto();
 
         Usuario usuarioAutor = this.usuariosRepository.findById(dto.idAutor())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario no existe"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException(dto.idAutor()));
 
         Ticket ticketComentario = this.ticketsRepository.findById(idTicket)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El ticket no existe"));
+                .orElseThrow(() -> new TicketNoEncontradoException(idTicket));
 
         Comentario comentario = new Comentario(texto, ticketComentario, usuarioAutor);
 
@@ -56,7 +59,7 @@ public class ComentarioService {
     @Transactional
     public ComentarioDTO patchComentario(Long id, ActualizarComentarioDTO dto) {
         Comentario comentario = this.comentarioRepository.findByIdAndActivoTrue(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Comentario no encontrado"));
+                .orElseThrow(() -> new ComentarioNoEncontradoException(id));
 
         String nuevoTexto = dto.texto();
 
@@ -68,7 +71,7 @@ public class ComentarioService {
     @Transactional
     public void deleteComentario(Long id) {
         Comentario comentario = this.comentarioRepository.findByIdAndActivoTrue(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "El comentario no existe"));
+                .orElseThrow(() -> new ComentarioNoEncontradoException(id));
 
         comentario.eliminarLogicamente();
     }

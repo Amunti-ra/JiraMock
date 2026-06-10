@@ -1,5 +1,8 @@
 package com.newjirasystem.app.tickets;
 
+import com.newjirasystem.app.exception.ProyectoNoEncontradoException;
+import com.newjirasystem.app.exception.TicketNoEncontradoException;
+import com.newjirasystem.app.exception.UsuarioNoEncontradoException;
 import com.newjirasystem.app.proyectos.Proyecto;
 import com.newjirasystem.app.proyectos.ProyectosRepository;
 import com.newjirasystem.app.usuarios.Usuario;
@@ -8,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+import org.yaml.snakeyaml.util.EnumUtils;
 
 import java.util.List;
 
@@ -41,10 +45,10 @@ public class TicketService {
 
         // busca al usuario creado y al proyecto al que se asignará el ticket
         Usuario creador = this.usuariosRepository.findById(idCreador)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario creado no existe"));
+                .orElseThrow(() -> new UsuarioNoEncontradoException(crearTicketDTO.idCreador()));
 
         Proyecto proyecto = this.proyectosRepository.findById(idProyecto)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El proyecto asignado no existe"));
+                .orElseThrow(() -> new ProyectoNoEncontradoException(crearTicketDTO.idPoryecto()));
 
 
         // clave del proyecto y suma uno al número de tickets actual (ex:JIRA-1)
@@ -72,25 +76,35 @@ public class TicketService {
     }
 
     public List<TicketDTO> getTicketsByProyectoId(Long id) {
+        // comprueba que el proyecto exista
+        if (!this.proyectosRepository.existsById(id)) {
+            throw new ProyectoNoEncontradoException(id);
+        }
+
         return this.ticketsRepository.findAllByProyectoIdAndActivoTrue(id).stream()
                 .map(this.ticketMapper::toTicketDTO)
                 .toList();
     }
 
-    public List<TicketDTO> getTicketsByPrioridad(String prioridad) {
-        return this.ticketsRepository.findAllByPrioridadAndActivoTrue(PrioridadTicket.valueOf(prioridad)).stream()
+    public List<TicketDTO> getTicketsByPrioridad(PrioridadTicket prioridad) {
+        return this.ticketsRepository.findAllByPrioridadAndActivoTrue(prioridad).stream()
                 .map(this.ticketMapper::toTicketDTO)
                 .toList();
     }
 
     public List<TicketDTO> getTicketsByAsignadoId(Long id) {
+        // comprueba que el usuario exista para no devolver una lista vacía
+        if (!this.usuariosRepository.existsById(id)) {
+            throw new UsuarioNoEncontradoException(id);
+        }
+
         return this.ticketsRepository.findAllByAsignadoIdAndActivoTrue(id).stream()
                 .map(this.ticketMapper::toTicketDTO)
                 .toList();
     }
 
-    public List<TicketDTO> getTicketsByEstado(String estado) {
-        return this.ticketsRepository.findAllByEstadoAndActivoTrue(EstadoTicket.valueOf(estado)).stream()
+    public List<TicketDTO> getTicketsByEstado(EstadoTicket estado) {
+        return this.ticketsRepository.findAllByEstadoAndActivoTrue(estado).stream()
                 .map(this.ticketMapper::toTicketDTO)
                 .toList();
     }
@@ -98,7 +112,7 @@ public class TicketService {
     public TicketDTO getTicketById(Long id) {
         return ticketsRepository.findByIdAndActivoTrue(id)
                 .map(this.ticketMapper::toTicketDTO)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado"));
+                .orElseThrow(() -> new TicketNoEncontradoException(id));
     }
 
     /**
@@ -118,7 +132,7 @@ public class TicketService {
 
         // obtiene el ticket por ID
         Ticket ticket = ticketsRepository.findByIdAndActivoTrue(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado"));
+                .orElseThrow(() -> new TicketNoEncontradoException(id));
 
         // comprueba si los datos del ActualizarTicketDTO están presentes para
         // actualizarlos en el Ticket
@@ -132,7 +146,7 @@ public class TicketService {
 
         if (dto.idAsignado() != null) {
             ticket.setAsignado(this.usuariosRepository.findById(dto.idAsignado())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "El Usuario a asignar no existe")));
+                    .orElseThrow(() -> new UsuarioNoEncontradoException(dto.idAsignado())));
         }
 
         if (dto.estado() != null) {
@@ -153,7 +167,7 @@ public class TicketService {
     @Transactional
     public void deleteTicketById(Long id) {
         Ticket ticket = this.ticketsRepository.findByIdAndActivoTrue(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Ticket no encontrado"));
+                .orElseThrow(() -> new TicketNoEncontradoException(id));
 
         ticket.borrarTicket();
     }
