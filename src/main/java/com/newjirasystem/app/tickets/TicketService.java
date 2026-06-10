@@ -79,40 +79,6 @@ public class TicketService {
                 .orElseThrow(() -> new TicketNoEncontradoException(id));
     }
 
-    public List<TicketDTO> getTicketsByProyectoId(Long id) {
-        // comprueba que el proyecto exista
-        if (!this.proyectosRepository.existsById(id)) {
-            throw new ProyectoNoEncontradoException(id);
-        }
-
-        return this.ticketsRepository.findAllByProyectoIdAndActivoTrue(id).stream()
-                .map(this.ticketMapper::toTicketDTO)
-                .toList();
-    }
-
-    public List<TicketDTO> getTicketsByPrioridad(PrioridadTicket prioridad) {
-        return this.ticketsRepository.findAllByPrioridadAndActivoTrue(prioridad).stream()
-                .map(this.ticketMapper::toTicketDTO)
-                .toList();
-    }
-
-    public List<TicketDTO> getTicketsByAsignadoId(Long id) {
-        // comprueba que el usuario exista para no devolver una lista vacía
-        if (!this.usuariosRepository.existsById(id)) {
-            throw new UsuarioNoEncontradoException(id);
-        }
-
-        return this.ticketsRepository.findAllByAsignadoIdAndActivoTrue(id).stream()
-                .map(this.ticketMapper::toTicketDTO)
-                .toList();
-    }
-
-    public List<TicketDTO> getTicketsByEstado(EstadoTicket estado) {
-        return this.ticketsRepository.findAllByEstadoAndActivoTrue(estado).stream()
-                .map(this.ticketMapper::toTicketDTO)
-                .toList();
-    }
-
     public List<TicketDTO> getFilteredTickets(Long idAsignado, Long idProyecto, PrioridadTicket prioridad, EstadoTicket estado) {
 
         if (idAsignado != null && !this.usuariosRepository.existsById(idAsignado)) {
