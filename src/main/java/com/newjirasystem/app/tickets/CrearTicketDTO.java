@@ -17,9 +17,7 @@ public record CrearTicketDTO(@NotBlank(message = "El título es obligatorio")
                              @NotNull(message = "El ID del proyecto es obligatorio")
                              Long idPoryecto,
 
-                             @Pattern(regexp = "LOW|MEDIUM|HIGH|BLOCKER", message = "La prioridad debe ser LOW, MEDIUM, HIGH o BLOCKER")
-                             String prioridad,
+                             PrioridadTicket prioridad,
 
-                             @Pattern(regexp = "EPICO|TAREA|BUG|SUBTAREA", message = "El tipo debe ser SUBTAREA, TAREA, BUG o EPICO")
-                             String tipo) {
+                             TipoTicket tipo) {
 }

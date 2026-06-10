@@ -34,12 +34,8 @@ public class TicketService {
         String descripcion = crearTicketDTO.descripcion();
         Long idCreador = crearTicketDTO.idCreador();
         Long idProyecto = crearTicketDTO.idPoryecto();
-        String prioridad = crearTicketDTO.prioridad();
-        String tipo = crearTicketDTO.tipo();
-
-        // transforma la string al enum de tipo y prioridad
-        TipoTicket tipoTicket = TipoTicket.valueOf(tipo);
-        PrioridadTicket prioridadTicket = PrioridadTicket.valueOf(prioridad);
+        PrioridadTicket prioridad = crearTicketDTO.prioridad();
+        TipoTicket tipo = crearTicketDTO.tipo();
 
         // busca al usuario creado y al proyecto al que se asignará el ticket
         Usuario creador = this.usuariosRepository.findById(idCreador)
@@ -58,7 +54,7 @@ public class TicketService {
         this.proyectosRepository.save(proyecto);
 
         // construye un ticket con los parámetros sacados antes
-        Ticket ticket = new Ticket(clave, tipoTicket, prioridadTicket, proyecto, creador, titulo, descripcion);
+        Ticket ticket = new Ticket(clave, tipo, prioridad, proyecto, creador, titulo, descripcion);
 
         // guarda el ticket en el respositorio
         this.ticketsRepository.save(ticket);
@@ -136,15 +132,15 @@ public class TicketService {
         }
 
         if (dto.estado() != null) {
-            ticket.setEstado(EstadoTicket.valueOf(dto.estado()));
+            ticket.setEstado(dto.estado());
         }
 
         if (dto.prioridad() != null) {
-            ticket.setPrioridad(PrioridadTicket.valueOf(dto.prioridad()));
+            ticket.setPrioridad(dto.prioridad());
         }
 
         if (dto.tipo() != null) {
-            ticket.setTipo(TipoTicket.valueOf(dto.tipo()));
+            ticket.setTipo(dto.tipo());
         }
 
         return this.ticketMapper.toTicketDTO(ticket);

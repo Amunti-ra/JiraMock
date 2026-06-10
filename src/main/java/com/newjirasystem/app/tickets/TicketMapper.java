@@ -29,9 +29,9 @@ public class TicketMapper {
                 ticket.getDescripcion(),
                 ticket.getClave(),
                 ticket.getProyecto().getNombre(),
-                ticket.getTipo().toString(),
-                ticket.getEstado().toString(),
-                ticket.getPrioridad().toString(),
+                ticket.getTipo(),
+                ticket.getEstado(),
+                ticket.getPrioridad(),
                 ticket.getCreador().getNombre(),
                 asignadoA,
                 ticket.getFechaCreacion()

@@ -10,12 +10,9 @@ public record ActualizarTicketDTO(@Size(max = 150, message = "El título no pued
 
                                   Long idAsignado, // id del usuario al que se ha asignado el ticket
 
-                                  @Pattern(regexp = "POR_HACER|EN_PROGRESO|RESUELTO", message = "El estado debe ser POR_HACER, EN_PROGRESO, RESUELTO")
-                                  String estado,
+                                  EstadoTicket estado,
 
-                                  @Pattern(regexp = "LOW|MEDIUM|HIGH|BLOCKER", message = "La prioridad debe ser LOW, MEDIUM, HIGH o BLOCKER")
-                                  String prioridad,
+                                  PrioridadTicket prioridad,
 
-                                  @Pattern(regexp = "EPICO|TAREA|BUG|SUBTAREA", message = "El tipo debe ser SUBTAREA, TAREA, BUG o EPICO")
-                                  String tipo) {
+                                  TipoTicket tipo) {
 }
