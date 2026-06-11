@@ -96,9 +96,7 @@ class TicketServiceTest {
 
         // act / assert
 
-        assertThrows(ProyectoNoEncontradoException.class, () -> {
-            ticketService.postTicket(testCrearTicketDTO);
-        });
+        assertThrows(ProyectoNoEncontradoException.class, () -> ticketService.postTicket(testCrearTicketDTO));
 
     }
 
@@ -120,9 +118,6 @@ class TicketServiceTest {
         );
 
         // act / assert
-
-        assertThrows(UsuarioNoEncontradoException.class, () -> {
-            ticketService.postTicket(testCrearTicketDTO);
-        });
+        assertThrows(UsuarioNoEncontradoException.class, () -> ticketService.postTicket(testCrearTicketDTO));
     }
 }
