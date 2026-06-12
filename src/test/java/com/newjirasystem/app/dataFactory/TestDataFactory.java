@@ -10,11 +10,11 @@ import com.newjirasystem.app.usuarios.Usuario;
 public class TestDataFactory {
 
     public static Ticket crearTicket() {
-        Proyecto proyecto = new Proyecto("DAM", "DAM");
-        Usuario usuario = new Usuario("mati", Rol.USER, "123");
+        Proyecto proyecto = TestDataFactory.crearProyecto();
+        Usuario usuario = TestDataFactory.crearUsuario();
 
         return new Ticket(
-                "DAM-1",
+                "TEST-1",
                 TipoTicket.TAREA,
                 PrioridadTicket.LOW,
                 proyecto,
@@ -22,5 +22,13 @@ public class TestDataFactory {
                 "prueba",
                 "descripcion"
         );
+    }
+
+    public static Usuario crearUsuario() {
+        return new Usuario("test", Rol.USER, "12345");
+    }
+
+    public static Proyecto crearProyecto() {
+        return new Proyecto("Test de proyecto", "TEST");
     }
 }
