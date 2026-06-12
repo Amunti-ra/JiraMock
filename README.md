@@ -76,8 +76,9 @@ com.newjirasystem.app
 ├── usuarios
 └── AppApplication
 ```
+## Project Architecture
 
-## The application follows a layered architecture:
+#### The application follows a layered architecture:
 ```text
 Client
 ↓
