@@ -128,6 +128,33 @@ class TicketServiceTest {
         assertThrows(UsuarioNoEncontradoException.class, () -> ticketService.postTicket(testCrearTicketDTO));
     }
 
+
+
+    @Test
+    void getTicketByIdWhenTicketExists_ShouldReturnTicketDTO() {
+        Ticket ticket = TestDataFactory.crearTicket();
+
+        ReflectionTestUtils.setField(ticket, "id", 1L);
+
+        when(ticketsRepository.findByIdAndActivoTrue(ticket.getId())).thenReturn(Optional.of(ticket));
+
+        TicketDTO resultado = ticketService.getTicketById(ticket.getId());
+
+        assertNotNull(resultado);
+        assertEquals(ticket.getId(), resultado.id());
+        assertEquals(ticket.getClave(), resultado.clave());
+    }
+
+    @Test
+    void getTicketById_WhenTicketIdDoesNotExists_ShouldThrowTicketNoEncontradoException() {
+
+        when(ticketsRepository.findByIdAndActivoTrue(999L)).thenReturn(Optional.empty());
+
+        assertThrows(TicketNoEncontradoException.class, () -> ticketService.getTicketById(999L));
+    }
+
+
+
     @Test
     void getTickets_ShouldReturnMappedTickets() {
         Ticket ticket1 = TestDataFactory.crearTicket();
@@ -143,15 +170,19 @@ class TicketServiceTest {
     }
 
     @Test
-    void getTicketById_WhenTicketIdDoesNotExists_ShouldThrowTicketNoEncontradoException() {
+    void getFilteredTicketsWhenAllParametersAreNull_ShouldReturnAllTickets() {
+        Ticket ticket1 = TestDataFactory.crearTicket();
+        Ticket ticket2 = TestDataFactory.crearTicket();
 
-        when(ticketsRepository.findByIdAndActivoTrue(999L)).thenReturn(Optional.empty());
+        when(ticketsRepository.findAll(any(Specification.class))).thenReturn(List.of(ticket1, ticket2));
 
-        assertThrows(TicketNoEncontradoException.class, () -> ticketService.getTicketById(999L));
+        List<TicketDTO> resultado = ticketService.getFilteredTickets(null, null, null, null);
+
+        assertEquals(2, resultado.size());
     }
 
     @Test
-    void getFilteredTickets_ShouldReturnMappedTickets() {
+    void getFilteredTickets_ShouldReturnMappedTicketsMatchingFilters() {
         Ticket ticket1 = TestDataFactory.crearTicket();
 
         when(usuariosRepository.existsById(1L)).thenReturn(true);
@@ -178,6 +209,69 @@ class TicketServiceTest {
         when(proyectosRepository.existsById(1L)).thenReturn(false);
 
         assertThrows(ProyectoNoEncontradoException.class, () -> ticketService.getFilteredTickets(null, 1L, null, null));
+    }
+
+
+    @Test
+    void patchTicketWhenTicketIdExists_ShouldReturnUpdatedTicketDTO() {
+        Ticket ticket = TestDataFactory.crearTicket();
+        ReflectionTestUtils.setField(ticket, "id", 1L);
+
+        Usuario usuario = TestDataFactory.crearUsuario();
+        ReflectionTestUtils.setField(usuario, "id", 1L);
+        ReflectionTestUtils.setField(usuario, "nombre", "nombreTest");
+
+        ActualizarTicketDTO dto = new ActualizarTicketDTO("test",
+                "descripcion test",
+                usuario.getId(),
+                EstadoTicket.EN_PROGRESO,
+                PrioridadTicket.MEDIUM,
+                TipoTicket.EPICO);
+
+        when(ticketsRepository.findByIdAndActivoTrue(1L)).thenReturn(Optional.of(ticket));
+        when(usuariosRepository.findById(1L)).thenReturn(Optional.of(usuario));
+
+        TicketDTO resultado = ticketService.patchTicketById(ticket.getId(), dto);
+
+        assertEquals(dto.titulo(), resultado.titulo());
+        assertEquals(dto.descripcion(), resultado.descripcion());
+        assertEquals(usuario.getNombre(), resultado.asignadoA());
+        assertEquals(dto.estado(), resultado.estado());
+        assertEquals(dto.prioridad(), resultado.prioridad());
+        assertEquals(dto.tipo(), resultado.tipo());
+
+    }
+
+    @Test
+    void patchTicketWhenTickedIdDoesNotExist_ShouldThrowTicketNotFoundException() {
+        ActualizarTicketDTO dto = new ActualizarTicketDTO("test",
+                "descripcion test",
+                1L,
+                EstadoTicket.EN_PROGRESO,
+                PrioridadTicket.MEDIUM,
+                TipoTicket.EPICO);
+
+        when(ticketsRepository.findByIdAndActivoTrue(999L)).thenReturn(Optional.empty());
+
+        assertThrows(TicketNoEncontradoException.class, () -> ticketService.patchTicketById(999L, dto));
+    }
+
+    @Test
+    void patchTicketWhenTicketIdAsignadoDoesNotExist_ShouldThrowUsuarioNoEncontradoException() {
+        Ticket ticket = TestDataFactory.crearTicket();
+        ReflectionTestUtils.setField(ticket, "id", 1L);
+
+        ActualizarTicketDTO dto = new ActualizarTicketDTO("test",
+                "descripcion test",
+                1L,
+                EstadoTicket.EN_PROGRESO,
+                PrioridadTicket.MEDIUM,
+                TipoTicket.EPICO);
+
+        when(usuariosRepository.findById(1L)).thenReturn(Optional.empty());
+        when(ticketsRepository.findByIdAndActivoTrue(1L)).thenReturn(Optional.of(ticket));
+
+        assertThrows(UsuarioNoEncontradoException.class, () -> ticketService.patchTicketById(1L, dto));
     }
 
 
