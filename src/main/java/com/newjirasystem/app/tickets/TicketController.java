@@ -101,10 +101,10 @@ public class TicketController {
                     description = "OK TicketDTO con los datos del ticket actualizados",
                     content = {@Content(schema = @Schema(implementation = TicketDTO.class))}),
             @ApiResponse(responseCode = "404", description = "NOT_FOUND Ticket que se quiere actualizar no encontrado", content = @Content)})
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @Tag(name = "Tickets")
-    public ResponseEntity<TicketDTO> putTicketById(@PathVariable Long id, @Valid @RequestBody ActualizarTicketDTO actualizarTicketDTO) {
-        TicketDTO ticketActualizado = ticketService.putTicketById(id, actualizarTicketDTO);
+    public ResponseEntity<TicketDTO> patchTicketById(@PathVariable Long id, @Valid @RequestBody ActualizarTicketDTO actualizarTicketDTO) {
+        TicketDTO ticketActualizado = ticketService.patchTicketById(id, actualizarTicketDTO);
 
         return new ResponseEntity<>(ticketActualizado, HttpStatus.OK);
     }
