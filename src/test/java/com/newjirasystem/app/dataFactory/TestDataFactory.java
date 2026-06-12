@@ -31,4 +31,28 @@ public class TestDataFactory {
     public static Proyecto crearProyecto() {
         return new Proyecto("Test de proyecto", "TEST");
     }
+
+    public static Ticket crearTicketActivo(Usuario usuario, Proyecto proyecto) {
+
+        String clave = proyecto.getCodigoProyecto() + "-" + (proyecto.getContadorTickets() + 1);
+        proyecto.aumentarContador();
+
+        return new Ticket(
+                clave,
+                TipoTicket.TAREA,
+                PrioridadTicket.LOW,
+                proyecto,
+                usuario,
+                "test",
+                "prueba ticket"
+        );
+    }
+
+    public static Ticket crearTicketInactivo(Usuario usuario, Proyecto proyecto) {
+        Ticket ticket = crearTicketActivo(usuario, proyecto);
+
+        ticket.borrarTicket();
+
+        return ticket;
+    }
 }
