@@ -1,6 +1,8 @@
 package com.newjirasystem.app.tickets;
 
+import com.newjirasystem.app.dataFactory.TestDataFactory;
 import com.newjirasystem.app.exception.ProyectoNoEncontradoException;
+import com.newjirasystem.app.exception.TicketNoEncontradoException;
 import com.newjirasystem.app.exception.UsuarioNoEncontradoException;
 import com.newjirasystem.app.proyectos.Proyecto;
 import com.newjirasystem.app.proyectos.ProyectosRepository;
@@ -13,10 +15,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -43,8 +48,8 @@ class TicketServiceTest {
         CrearTicketDTO testCrearTicketDTO = new CrearTicketDTO(
                 "titulo",
                 "descripcion",
-                1L,
-                2L,
+                0L,
+                0L,
                 PrioridadTicket.LOW,
                 TipoTicket.TAREA);
 
@@ -71,6 +76,13 @@ class TicketServiceTest {
 
         assertNotNull(resultado);
         assertEquals("DAM-1", resultado.clave());
+        assertEquals(1, proyectoMock.getContadorTickets());
+        assertEquals(EstadoTicket.POR_HACER, resultado.estado());
+        assertEquals(proyectoMock.getNombre(), resultado.proyecto());
+        assertEquals(usuarioMock.getNombre(), resultado.creador());
+
+        assertEquals(testCrearTicketDTO.prioridad(), resultado.prioridad());
+        assertEquals(testCrearTicketDTO.titulo(), resultado.titulo());
     }
 
     @Test
@@ -111,13 +123,79 @@ class TicketServiceTest {
                 PrioridadTicket.LOW,
                 TipoTicket.TAREA);
 
-
-        Proyecto proyectoMock = new Proyecto(
-                "Desarrollo Multiplataforma",
-                "DAM"
-        );
-
         // act / assert
         assertThrows(UsuarioNoEncontradoException.class, () -> ticketService.postTicket(testCrearTicketDTO));
+    }
+
+    @Test
+    void getTickets_ShouldReturnMappedTickets() {
+        Ticket ticket1 = TestDataFactory.crearTicket();
+        Ticket ticket2 = TestDataFactory.crearTicket();
+
+        when(ticketsRepository.findAllByActivoTrue()).thenReturn(List.of(ticket1, ticket2));
+
+        List<TicketDTO> resultado = ticketService.getTickets();
+
+        assertEquals(2, resultado.size());
+        assertEquals("DAM-1", resultado.getFirst().clave());
+        assertEquals(PrioridadTicket.LOW, resultado.getFirst().prioridad());
+    }
+
+    @Test
+    void getTicketById_WhenTicketIdDoesNotExists_ShouldThrowTicketNoEncontradoException() {
+
+        when(ticketsRepository.findByIdAndActivoTrue(999L)).thenReturn(Optional.empty());
+
+        assertThrows(TicketNoEncontradoException.class, () -> ticketService.getTicketById(999L));
+    }
+
+    @Test
+    void getFilteredTickets_ShouldReturnMappedTickets() {
+        Ticket ticket1 = TestDataFactory.crearTicket();
+
+        when(usuariosRepository.existsById(1L)).thenReturn(true);
+        when(proyectosRepository.existsById(1L)).thenReturn(true);
+
+        when(ticketsRepository.findAll(any(Specification.class))).thenReturn(List.of(ticket1));
+
+        List<TicketDTO> resultado = ticketService.getFilteredTickets(1L, 1L, PrioridadTicket.LOW, EstadoTicket.POR_HACER);
+
+        assertEquals(1, resultado.size());
+        assertEquals("DAM-1", resultado.getFirst().clave());
+        assertEquals(PrioridadTicket.LOW, resultado.getFirst().prioridad());
+    }
+
+    @Test
+    void getFilteredTicketsWhenUsuarioDoesNotExist_ShouldThrowUsuarioNoEncontradoException() {
+        when(usuariosRepository.existsById(1L)).thenReturn(false);
+
+        assertThrows(UsuarioNoEncontradoException.class, () -> ticketService.getFilteredTickets(1L, null, null, null));
+    }
+
+    @Test
+    void getFilteredTicketsWhenProyectoDoesNotExist_ShouldThrowProyectoNoEncontradoException() {
+        when(proyectosRepository.existsById(1L)).thenReturn(false);
+
+        assertThrows(ProyectoNoEncontradoException.class, () -> ticketService.getFilteredTickets(null, 1L, null, null));
+    }
+
+
+
+    @Test
+    void deleteTicketWhenTicketExists() {
+        Ticket ticket = TestDataFactory.crearTicket();
+
+        when(ticketsRepository.findByIdAndActivoTrue(ticket.getId())).thenReturn(Optional.of(ticket));
+
+        ticketService.deleteTicketById(ticket.getId());
+
+        assertFalse(ticket.isActivo());
+    }
+
+    @Test
+    void deleteTicketWhenTicketDoesNotExists_ShouldThrowTicketNoEncontradoException() {
+        when(ticketsRepository.findByIdAndActivoTrue(999L)).thenReturn(Optional.empty());
+
+        assertThrows(TicketNoEncontradoException.class, () -> ticketService.deleteTicketById(999L));
     }
 }
