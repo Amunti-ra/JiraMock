@@ -110,7 +110,7 @@ public class TicketService {
 *                               no se encuentran
      */
     @Transactional
-    public TicketDTO putTicketById(Long id, ActualizarTicketDTO dto) {
+    public TicketDTO patchTicketById(Long id, ActualizarTicketDTO dto) {
 
         // obtiene el ticket por ID
         Ticket ticket = ticketsRepository.findByIdAndActivoTrue(id)
