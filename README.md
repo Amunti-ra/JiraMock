@@ -63,20 +63,24 @@ I'm actively developing this project as part of my effort to progress into the r
 
 ## Project Structure
 
-src/main/java/com/newjirasystem/app
+The project is organized by business modules (package-by-feature) while maintaining a layered architecture internally.
+
 ```text
-├── controller
-├── service
-├── repository
-├── entity
-├── dto
-├── mapper
+com.newjirasystem.app
+
+├── comentarios
+├── config
 ├── exception
-└── config
+├── proyectos
+├── tickets
+├── usuarios
+└── AppApplication
 ```
 
 ## The application follows a layered architecture:
 ```text
+Client
+↓
 Controller
 ↓
 DTO Input
@@ -85,7 +89,19 @@ Service
 ↓
 Repository
 ↓
+Database
+
+Database
+↓
+Repository
+↓
 Entity
 ↓
+Service
+↓
 DTO Output
+↓
+Controller
+↓
+Client
 ```
