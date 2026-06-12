@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -137,7 +138,7 @@ class TicketServiceTest {
         List<TicketDTO> resultado = ticketService.getTickets();
 
         assertEquals(2, resultado.size());
-        assertEquals("DAM-1", resultado.getFirst().clave());
+        assertEquals("TEST-1", resultado.getFirst().clave());
         assertEquals(PrioridadTicket.LOW, resultado.getFirst().prioridad());
     }
 
@@ -161,7 +162,7 @@ class TicketServiceTest {
         List<TicketDTO> resultado = ticketService.getFilteredTickets(1L, 1L, PrioridadTicket.LOW, EstadoTicket.POR_HACER);
 
         assertEquals(1, resultado.size());
-        assertEquals("DAM-1", resultado.getFirst().clave());
+        assertEquals("TEST-1", resultado.getFirst().clave());
         assertEquals(PrioridadTicket.LOW, resultado.getFirst().prioridad());
     }
 
@@ -184,6 +185,8 @@ class TicketServiceTest {
     @Test
     void deleteTicketWhenTicketExists() {
         Ticket ticket = TestDataFactory.crearTicket();
+
+        ReflectionTestUtils.setField(ticket, "id", 1L);
 
         when(ticketsRepository.findByIdAndActivoTrue(ticket.getId())).thenReturn(Optional.of(ticket));
 
