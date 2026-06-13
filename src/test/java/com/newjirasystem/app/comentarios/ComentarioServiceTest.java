@@ -101,7 +101,7 @@ class ComentarioServiceTest {
 
         when(comentarioRepository.findByTicketIdAndActivoTrue(ticket.getId())).thenReturn(List.of(comentario1, comentario2));
 
-        List<ComentarioDTO> resultado = comentarioService.getComenatariosByTicketId(ticket.getId());
+        List<ComentarioDTO> resultado = comentarioService.getComentariosByTicketId(ticket.getId());
 
         assertEquals(2, resultado.size());
         assertEquals(comentario1.getTexto(), resultado.getFirst().texto());
@@ -115,7 +115,7 @@ class ComentarioServiceTest {
         when(ticketsRepository.existsById(1L)).thenReturn(true);
         when(comentarioRepository.findByTicketIdAndActivoTrue(1L)).thenReturn(List.of());
 
-        List<ComentarioDTO> resultado = comentarioService.getComenatariosByTicketId(1L);
+        List<ComentarioDTO> resultado = comentarioService.getComentariosByTicketId(1L);
 
         assertNotNull(resultado);
         assertEquals(0, resultado.size());
@@ -125,7 +125,7 @@ class ComentarioServiceTest {
     void getComentariosByTicketIdWhenTicketDoesNotExist_ShouldThrowTicketNoEncontradoException() {
         when(ticketsRepository.existsById(1L)).thenReturn(false);
 
-        assertThrows(TicketNoEncontradoException.class, () -> comentarioService.getComenatariosByTicketId(1L));
+        assertThrows(TicketNoEncontradoException.class, () -> comentarioService.getComentariosByTicketId(1L));
     }
 
 
