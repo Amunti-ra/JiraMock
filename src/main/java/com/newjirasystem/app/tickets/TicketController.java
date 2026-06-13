@@ -134,6 +134,6 @@ public class TicketController {
     @Tag(name = "Comentarios")
     @GetMapping("/{idTicket}/comentarios")
     public List<ComentarioDTO> getComentariosByTicketId(@PathVariable Long idTicket) {
-        return comentarioService.getComenatariosByTicketId(idTicket);
+        return comentarioService.getComentariosByTicketId(idTicket);
     }
 }
