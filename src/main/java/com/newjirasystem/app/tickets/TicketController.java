@@ -41,7 +41,7 @@ public class TicketController {
             @ApiResponse(responseCode = "404", description = "NOT_FOUND Ticket, Usuario o Proyecto no encontrado", content = @Content)
     })
     @Tag(name = "Tickets", description = "metodo para la gestion y consulta de tickets")
-    @GetMapping
+    @GetMapping("/get")
     public ResponseEntity<List<TicketDTO>> getTickets(@Parameter (description = "Filtrar por Id de usuario que tenga el ticket asignado")
                                                           @RequestParam(required = false) Long asignadoId,
                                                       @Parameter (description = "Filtrar por id del proyecto al cual esta el ticket asignado")
