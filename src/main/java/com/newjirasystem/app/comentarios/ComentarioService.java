@@ -7,10 +7,8 @@ import com.newjirasystem.app.tickets.Ticket;
 import com.newjirasystem.app.tickets.TicketsRepository;
 import com.newjirasystem.app.usuarios.Usuario;
 import com.newjirasystem.app.usuarios.UsuariosRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -38,7 +36,7 @@ public class ComentarioService {
         Usuario usuarioAutor = this.usuariosRepository.findById(dto.idAutor())
                 .orElseThrow(() -> new UsuarioNoEncontradoException(dto.idAutor()));
 
-        Ticket ticketComentario = this.ticketsRepository.findById(idTicket)
+        Ticket ticketComentario = this.ticketsRepository.findByIdAndActivoTrue(idTicket)
                 .orElseThrow(() -> new TicketNoEncontradoException(idTicket));
 
         Comentario comentario = new Comentario(texto, ticketComentario, usuarioAutor);
@@ -48,7 +46,12 @@ public class ComentarioService {
         return this.comentarioMapper.toComentarioDTO(comentario);
     }
 
-    public List<ComentarioDTO> getComenatariosByTicketId(Long id) {
+    public List<ComentarioDTO> getComentariosByTicketId(Long id) {
+
+        if (!this.ticketsRepository.existsById(id)) {
+            throw new TicketNoEncontradoException(id);
+        }
+
         List<Comentario> listaComentarios = this.comentarioRepository.findByTicketIdAndActivoTrue(id);
 
         return listaComentarios.stream()
@@ -60,6 +63,10 @@ public class ComentarioService {
     public ComentarioDTO patchComentario(Long id, ActualizarComentarioDTO dto) {
         Comentario comentario = this.comentarioRepository.findByIdAndActivoTrue(id)
                 .orElseThrow(() -> new ComentarioNoEncontradoException(id));
+
+        if (comentario.getTexto().equals(dto.texto())) {
+            return this.comentarioMapper.toComentarioDTO(comentario);
+        }
 
         String nuevoTexto = dto.texto();
 
