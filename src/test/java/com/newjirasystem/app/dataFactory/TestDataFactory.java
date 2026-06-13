@@ -1,11 +1,12 @@
 package com.newjirasystem.app.dataFactory;
 
+import com.newjirasystem.app.comentarios.Comentario;
 import com.newjirasystem.app.proyectos.Proyecto;
-import com.newjirasystem.app.tickets.PrioridadTicket;
-import com.newjirasystem.app.tickets.Ticket;
-import com.newjirasystem.app.tickets.TipoTicket;
+import com.newjirasystem.app.tickets.*;
 import com.newjirasystem.app.usuarios.Rol;
 import com.newjirasystem.app.usuarios.Usuario;
+
+import java.time.LocalDateTime;
 
 public class TestDataFactory {
 
@@ -55,4 +56,31 @@ public class TestDataFactory {
 
         return ticket;
     }
+
+    public static TicketDTO crearTicketDto() {
+        return new TicketDTO(
+                1L,
+                "test titulo",
+                "test descripcion",
+                "TEST-1",
+                "1",
+                TipoTicket.BUG,
+                EstadoTicket.POR_HACER,
+                PrioridadTicket.LOW,
+                "usuario test",
+                "asignao test",
+                LocalDateTime.now()
+        );
+    }
+
+
+
+    public static Comentario crearComentario(Ticket ticket, Usuario usuario) {
+
+        return new Comentario("test comentario", ticket, usuario);
+
+    }
+
+
+
 }
