@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleTicketNoEncontrado(TicketNoEncontradoException ex) {
 
         ErrorResponse error = new ErrorResponse(
-                "USER_NOT_FOUND",
+                "TICKET_NOT_FOUND",
                 ex.getMessage(),
                 404,
                 Instant.now()
