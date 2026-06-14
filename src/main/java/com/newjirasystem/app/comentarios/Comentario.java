@@ -42,7 +42,7 @@ public class Comentario {
     }
 
 
-    public void eliminarLogicamente() {
+    public void borrarComentario() {
         this.activo = false;
     }
 
