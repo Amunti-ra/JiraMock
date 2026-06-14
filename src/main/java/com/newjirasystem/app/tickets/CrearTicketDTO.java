@@ -14,7 +14,7 @@ public record CrearTicketDTO(@NotBlank(message = "El título es obligatorio")
                              Long idCreador,
 
                              @NotNull(message = "El ID del proyecto es obligatorio")
-                             Long idPoryecto,
+                             Long idProyecto,
 
                              PrioridadTicket prioridad,
 
