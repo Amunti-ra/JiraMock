@@ -1,12 +1,14 @@
 package com.newjirasystem.app.dataFactory;
 
 import com.newjirasystem.app.comentarios.Comentario;
+import com.newjirasystem.app.comentarios.ComentarioDTO;
 import com.newjirasystem.app.proyectos.Proyecto;
 import com.newjirasystem.app.tickets.*;
 import com.newjirasystem.app.usuarios.Rol;
 import com.newjirasystem.app.usuarios.Usuario;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class TestDataFactory {
 
@@ -68,11 +70,41 @@ public class TestDataFactory {
                 EstadoTicket.POR_HACER,
                 PrioridadTicket.LOW,
                 "usuario test",
-                "asignao test",
+                "asignado test",
                 LocalDateTime.now()
         );
     }
 
+    public static List<TicketDTO> crearListaTicketDTO() {
+        return List.of(
+                new TicketDTO(
+                        1L,
+                        "test titulo",
+                        "test descripcion",
+                        "TEST-1",
+                        "1",
+                        TipoTicket.BUG,
+                        EstadoTicket.POR_HACER,
+                        PrioridadTicket.LOW,
+                        "usuario test",
+                        "asignado test",
+                        LocalDateTime.now()
+                ),
+                new TicketDTO(
+                        2L,
+                        "test titulo",
+                        "test descripcion",
+                        "TEST-2",
+                        "1",
+                        TipoTicket.BUG,
+                        EstadoTicket.POR_HACER,
+                        PrioridadTicket.LOW,
+                        "usuario test",
+                        "asignado test",
+                        LocalDateTime.now()
+                )
+        );
+    }
 
 
     public static Comentario crearComentario(Ticket ticket, Usuario usuario) {
@@ -81,6 +113,39 @@ public class TestDataFactory {
 
     }
 
+
+    public static ComentarioDTO crearComentarioDTO() {
+        return new ComentarioDTO(
+                1L,
+                "texto test",
+                1L,
+                "nombre test",
+                LocalDateTime.of(2026, 6, 14,12, 0, 0),
+                LocalDateTime.now()
+        );
+    }
+
+    public static List<ComentarioDTO> crearListaComentarioDTO() {
+        return List.of(
+                new ComentarioDTO(
+                        1L,
+                        "texto test",
+                        1L,
+                        "nombre test",
+                        LocalDateTime.of(2026, 6, 14,12, 0, 0),
+                        LocalDateTime.now()
+                ),
+                new ComentarioDTO(
+                        2L,
+                        "texto test",
+                        1L,
+                        "nombre test",
+                        LocalDateTime.of(2026, 6, 14,12, 0, 0),
+                        LocalDateTime.now()
+                )
+
+        );
+    }
 
 
 }
