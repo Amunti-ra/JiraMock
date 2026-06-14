@@ -37,21 +37,9 @@ class TicketsRepositoryTest {
         usuariosRepository.save(usuario);
         proyectosRepository.save(proyecto);
 
-        Ticket ticket = TestDataFactory.crearTicketActivo(usuario, proyecto);
-        ticketsRepository.save(ticket);
-
-        Ticket ticket2 = TestDataFactory.crearTicketActivo(usuario, proyecto);
-        ticketsRepository.save(ticket2);
-
-        Ticket ticket3 = TestDataFactory.crearTicketActivo(usuario, proyecto);
-        ticketsRepository.save(ticket3);
-
-        Ticket ticket4 = TestDataFactory.crearTicketInactivo(usuario, proyecto);
-        ticketsRepository.save(ticket4);
-
-        Ticket ticket5 = TestDataFactory.crearTicketInactivo(usuario, proyecto);
-        ticketsRepository.save(ticket5);
-
+        for (int i = 0; i < 5; i++) {
+            ticketsRepository.save(TestDataFactory.crearTicketActivo(usuario, proyecto));
+        }
 
         // when
         List<Ticket> listaTickets = ticketsRepository.findAllByActivoTrue().stream()
@@ -65,7 +53,7 @@ class TicketsRepositoryTest {
     }
 
     @Test
-    void findByIdAndActivoTrueWhenIdExistsAndActivoIsTrue_ShouldReturnTicket() {
+    void findByIdAndActivoTrue_WhenIdExistsAndActivoIsTrue_ShouldReturnTicket() {
         // given
         Usuario usuario = TestDataFactory.crearUsuario();
         Proyecto proyecto = TestDataFactory.crearProyecto();
@@ -80,7 +68,7 @@ class TicketsRepositoryTest {
     }
 
     @Test
-    void findByIdAndActivoTrueWhenActivoIsFalse_ShouldReturnEmptyOptionalTicket() {
+    void findByIdAndActivoTrue_WhenIdExistsAndActivoIsFalse_ShouldReturnEmptyOptionalTicket() {
         // given
         Usuario usuario = TestDataFactory.crearUsuario();
         Proyecto proyecto = TestDataFactory.crearProyecto();
@@ -98,7 +86,7 @@ class TicketsRepositoryTest {
     }
 
     @Test
-    void findByIdAndActivoTrueWhenIdDoesNotExist_ShouldReturnEmptyOptionalTicket() {
+    void findByIdAndActivoTrue_WhenIdDoesNotExist_ShouldReturnEmptyOptionalTicket() {
         assertTrue(ticketsRepository.findByIdAndActivoTrue(99999999L).isEmpty());
     }
 
@@ -134,6 +122,8 @@ class TicketsRepositoryTest {
         ticketsRepository.save(ticket);
 
         // then
+        assertFalse(ticket.isActivo());
+        assertTrue(ticketsRepository.findById(ticket.getId()).isPresent());
         assertTrue(ticketsRepository.findByIdAndActivoTrue(ticket.getId()).isEmpty());
     }
 }
