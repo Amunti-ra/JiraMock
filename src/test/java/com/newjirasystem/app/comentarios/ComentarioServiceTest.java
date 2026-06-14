@@ -99,7 +99,7 @@ class ComentarioServiceTest {
         Comentario comentario1 = TestDataFactory.crearComentario(ticket, usuario);
         Comentario comentario2 = TestDataFactory.crearComentario(ticket, usuario);
 
-        when(comentarioRepository.findByTicketIdAndActivoTrue(ticket.getId())).thenReturn(List.of(comentario1, comentario2));
+        when(comentarioRepository.findAllByTicketIdAndActivoTrue(ticket.getId())).thenReturn(List.of(comentario1, comentario2));
 
         List<ComentarioDTO> resultado = comentarioService.getComentariosByTicketId(ticket.getId());
 
@@ -113,7 +113,7 @@ class ComentarioServiceTest {
     @Test
     void getComentariosByTicketIdWhenTicketDoesExistButHasNoComentarios() {
         when(ticketsRepository.existsById(1L)).thenReturn(true);
-        when(comentarioRepository.findByTicketIdAndActivoTrue(1L)).thenReturn(List.of());
+        when(comentarioRepository.findAllByTicketIdAndActivoTrue(1L)).thenReturn(List.of());
 
         List<ComentarioDTO> resultado = comentarioService.getComentariosByTicketId(1L);
 
