@@ -67,7 +67,7 @@ class TicketServiceTest {
         );
 
         when(usuariosRepository.findById((testCrearTicketDTO.idCreador()))).thenReturn(Optional.of(usuarioMock));
-        when(proyectosRepository.findById(testCrearTicketDTO.idPoryecto())).thenReturn(Optional.of(proyectoMock));
+        when(proyectosRepository.findById(testCrearTicketDTO.idProyecto())).thenReturn(Optional.of(proyectoMock));
 
         // act
 
@@ -105,7 +105,7 @@ class TicketServiceTest {
         );
 
         when(usuariosRepository.findById((testCrearTicketDTO.idCreador()))).thenReturn(Optional.of(usuarioMock));
-        when(proyectosRepository.findById(testCrearTicketDTO.idPoryecto())).thenReturn(Optional.empty());
+        when(proyectosRepository.findById(testCrearTicketDTO.idProyecto())).thenReturn(Optional.empty());
 
         // act / assert
 
