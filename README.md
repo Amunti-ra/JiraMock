@@ -47,14 +47,15 @@ I'm actively developing this project as part of my effort to progress into the r
 - [x] Custom Exceptions
 - [x] ControllerAdvice
 - [x] Dynamic Queries (JPA Specifications)
+- [x] Unit testing
+- [x] Integration testing
 
-### In progress: 
-- [ ] Unit testing
-- [ ] Integration testing
 
+
+### In progress:
+- [ ] Docker 
 
 ### Planned:
-- [ ] Docker 
 - [ ] Security
 - [ ] JWT
 - [ ] CI/CD
