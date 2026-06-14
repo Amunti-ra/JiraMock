@@ -33,7 +33,7 @@ public class TicketService {
         String titulo = crearTicketDTO.titulo();
         String descripcion = crearTicketDTO.descripcion();
         Long idCreador = crearTicketDTO.idCreador();
-        Long idProyecto = crearTicketDTO.idPoryecto();
+        Long idProyecto = crearTicketDTO.idProyecto();
         PrioridadTicket prioridad = crearTicketDTO.prioridad();
         TipoTicket tipo = crearTicketDTO.tipo();
 
@@ -42,7 +42,7 @@ public class TicketService {
                 .orElseThrow(() -> new UsuarioNoEncontradoException(crearTicketDTO.idCreador()));
 
         Proyecto proyecto = this.proyectosRepository.findById(idProyecto)
-                .orElseThrow(() -> new ProyectoNoEncontradoException(crearTicketDTO.idPoryecto()));
+                .orElseThrow(() -> new ProyectoNoEncontradoException(crearTicketDTO.idProyecto()));
 
 
         // clave del proyecto y suma uno al número de tickets actual (ex:JIRA-1)
