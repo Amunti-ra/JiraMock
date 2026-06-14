@@ -52,7 +52,7 @@ public class ComentarioService {
             throw new TicketNoEncontradoException(id);
         }
 
-        List<Comentario> listaComentarios = this.comentarioRepository.findByTicketIdAndActivoTrue(id);
+        List<Comentario> listaComentarios = this.comentarioRepository.findAllByTicketIdAndActivoTrue(id);
 
         return listaComentarios.stream()
                 .map(this.comentarioMapper::toComentarioDTO)
@@ -80,6 +80,6 @@ public class ComentarioService {
         Comentario comentario = this.comentarioRepository.findByIdAndActivoTrue(id)
                 .orElseThrow(() -> new ComentarioNoEncontradoException(id));
 
-        comentario.eliminarLogicamente();
+        comentario.borrarComentario();
     }
 }
