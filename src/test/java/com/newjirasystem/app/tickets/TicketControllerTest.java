@@ -313,6 +313,23 @@ class TicketControllerTest {
     }
 
     @Test
+    void postComentario_WhenTicketExistsAndDataIsInvalid_ShouldReturn400BadRequest() throws Exception {
+        String texto = "A".repeat(501);
+
+        String entrada = """
+                {
+                    "texto": "%s",
+                    "idAutor": 1
+                }
+                """.formatted(texto);
+
+        mockMvc.perform(post("/tickets/1/comentarios")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(entrada))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void postComentario_WhenUsuarioDoesNotExist_ShouldReturn404NotFound() throws Exception{
         String entrada = """
                 {
