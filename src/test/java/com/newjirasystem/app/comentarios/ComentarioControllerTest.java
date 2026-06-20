@@ -1,9 +1,12 @@
 package com.newjirasystem.app.comentarios;
 
+import com.newjirasystem.app.auth.JwtService;
 import com.newjirasystem.app.dataFactory.TestDataFactory;
 import com.newjirasystem.app.exception.TicketNoEncontradoException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -17,7 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ComentarioController.class)
+@WebMvcTest(value = ComentarioController.class,
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class})
 class ComentarioControllerTest {
 
     @Autowired
@@ -25,6 +30,9 @@ class ComentarioControllerTest {
 
     @MockitoBean
     private ComentarioService comentarioService;
+
+    @MockitoBean
+    JwtService jwtService;
 
 
 

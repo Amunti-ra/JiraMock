@@ -1,5 +1,6 @@
 package com.newjirasystem.app.tickets;
 
+import com.newjirasystem.app.auth.JwtService;
 import com.newjirasystem.app.comentarios.ComentarioDTO;
 import com.newjirasystem.app.comentarios.ComentarioService;
 import com.newjirasystem.app.dataFactory.TestDataFactory;
@@ -10,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -23,7 +26,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(TicketController.class)
+@WebMvcTest(value = TicketController.class,
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class,
+                UserDetailsServiceAutoConfiguration.class})
 class TicketControllerTest {
 
     @Autowired
@@ -37,6 +42,9 @@ class TicketControllerTest {
 
     @MockitoBean
     ComentarioService comentarioService;
+
+    @MockitoBean
+    JwtService jwtService;
 
 
 
@@ -62,7 +70,7 @@ class TicketControllerTest {
         when(ticketService.getFilteredTickets(eq(999L), any(), any(), any())).thenThrow(new UsuarioNoEncontradoException(999L));
 
         mockMvc.perform(get("/tickets/get")
-                        .param("asignadoId", "999")) // Forzamos el ID inexistente
+                        .param("asignadoId", "999"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.mensaje").value("Usuario con ID 999 no encontrado"));
     }
