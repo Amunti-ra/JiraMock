@@ -99,6 +99,7 @@ class ComentarioServiceTest {
         Comentario comentario1 = TestDataFactory.crearComentario(ticket, usuario);
         Comentario comentario2 = TestDataFactory.crearComentario(ticket, usuario);
 
+        when(ticketsRepository.existsById(ticket.getId())).thenReturn(true);
         when(comentarioRepository.findAllByTicketIdAndActivoTrue(ticket.getId())).thenReturn(List.of(comentario1, comentario2));
 
         List<ComentarioDTO> resultado = comentarioService.getComentariosByTicketId(ticket.getId());
