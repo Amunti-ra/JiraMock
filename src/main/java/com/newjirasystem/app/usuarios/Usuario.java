@@ -1,9 +1,15 @@
 package com.newjirasystem.app.usuarios;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-public class Usuario {
+public class Usuario implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -11,20 +17,36 @@ public class Usuario {
     @Column(nullable = false, length = 100)
     private String nombre;
 
+    @Column(nullable = false, length = 60)
+    private String password;
+
     @Enumerated(EnumType.STRING)
     private Rol rol;
-
-    @Column(length = 15)
-    private String telefono;
 
 
     // Constructores vacio y full
     protected Usuario() {}
 
-    public Usuario(String nombre, Rol rol, String telefono) {
+    public Usuario(String nombre, Rol rol, String password) {
         this.nombre = nombre;
         this.rol = rol;
-        this.telefono = telefono;
+        this.password = password;
+    }
+
+
+    @Override
+    public String getUsername() {
+        return this.nombre;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + rol.name()));
     }
 
 
@@ -37,7 +59,14 @@ public class Usuario {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
+    protected void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void actualizarNombre(String nombre) {
+        if (nombre == null || nombre.length() < 4) {
+            throw new IllegalArgumentException("El username debe tener al menos 4 caracteres.");
+        }
         this.nombre = nombre;
     }
 
@@ -45,15 +74,19 @@ public class Usuario {
         return rol;
     }
 
-    public void setRol(Rol rol) {
+    protected void setRol(Rol rol) {
         this.rol = rol;
     }
 
-    public String getTelefono() {
-        return telefono;
-    }
+    @Override
+    public boolean isAccountNonExpired() {return true;}
 
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
+    @Override
+    public boolean isAccountNonLocked() {return true;}
+
+    @Override
+    public boolean isCredentialsNonExpired() {return true;}
+
+    @Override
+    public boolean isEnabled() {return true;}
 }
