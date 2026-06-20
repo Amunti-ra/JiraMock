@@ -10,6 +10,7 @@ import com.newjirasystem.app.usuarios.Usuario;
 import com.newjirasystem.app.usuarios.UsuariosRepository;
 import net.datafaker.Faker;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,20 +25,23 @@ public class DataSeeder implements CommandLineRunner {
     private final ProyectosRepository proyectoRepository;
     private final TicketsRepository ticketRepository;
     private final ComentarioRepository comentarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public DataSeeder(UsuariosRepository usuarioRepository,
                       ProyectosRepository proyectoRepository,
                       TicketsRepository ticketRepository,
-                      ComentarioRepository comentarioRepository) {
+                      ComentarioRepository comentarioRepository,
+                      PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.proyectoRepository = proyectoRepository;
         this.ticketRepository = ticketRepository;
         this.comentarioRepository = comentarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     @Transactional // Asegura la sesión de Hibernate para manejar las claves foráneas
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (usuarioRepository.count() > 0) {
             return;
         }
@@ -58,12 +62,10 @@ public class DataSeeder implements CommandLineRunner {
 
         for (int i = 0; i < 20; i++) {
             String nombre = faker.name().fullName();
-            String telefono = faker.phoneNumber().cellPhone();
             Rol rol = i % 5 == 0 ? Rol.ADMIN : Rol.USER;
 
-            // Uso del constructor: Usuario(Long id, String nombre, Rol rol, String telefono)
-            // Pasamos 'null' en el ID para que la base de datos lo autogenerara con el @Id @GeneratedValue
-            Usuario usuario = new Usuario(nombre, rol, telefono);
+            // Uso del constructor: Usuario(String username, Rol rol, String password)
+            Usuario usuario = new Usuario(nombre, rol, passwordEncoder.encode(rol.name()));
             usuarios.add(usuario);
         }
 
@@ -79,7 +81,7 @@ public class DataSeeder implements CommandLineRunner {
             String nombre = faker.company().name();
             String codigo = codigos[i];
 
-            // Uso del constructor: Proyecto(String nombre, String codigoProyecto)
+            // Uso del constructor: Proyecto(String username, String codigoProyecto)
             Proyecto proyecto = new Proyecto(nombre, codigo);
             proyectos.add(proyecto);
         }
