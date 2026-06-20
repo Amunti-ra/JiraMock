@@ -49,7 +49,7 @@ class TicketsRepositoryTest {
         // then
         assertTrue(listaTickets.stream().allMatch(Ticket::isActivo));
         assertFalse(listaTickets.stream().anyMatch(t -> !t.isActivo()));
-        assertEquals(3, listaTickets.size());
+        assertEquals(5, listaTickets.size());
     }
 
     @Test

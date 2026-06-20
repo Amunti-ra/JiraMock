@@ -19,7 +19,7 @@ public class JwtService {
     private final long tiempoExpiracion;
     private final long tiempoExpiracionRefreshToken;
 
-    public JwtService(@Value("${jira.jwt.secret}") String secretKey, @Value("${security.jwt.expiration-time}") long tiempoExpiracion, @Value("${security.jwt.refresh-expiration-time}") long tiempoExpiracionRefreshToken) {
+    public JwtService(@Value("${app.jwt.secret}") String secretKey, @Value("${app.jwt.expiration-time}") long tiempoExpiracion, @Value("${app.jwt.refresh-expiration-time}") long tiempoExpiracionRefreshToken) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.tiempoExpiracion = tiempoExpiracion;
         this.tiempoExpiracionRefreshToken = tiempoExpiracionRefreshToken;
