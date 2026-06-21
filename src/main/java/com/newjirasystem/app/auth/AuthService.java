@@ -1,7 +1,6 @@
 package com.newjirasystem.app.auth;
 
 import com.newjirasystem.app.exception.CredencialesInvalidasException;
-import com.newjirasystem.app.exception.SesionExpiradaException;
 import com.newjirasystem.app.exception.UsuarioNoEncontradoException;
 import com.newjirasystem.app.usuarios.Rol;
 import com.newjirasystem.app.usuarios.Usuario;
@@ -62,25 +61,25 @@ public class AuthService {
 
     public TokenResponseDTO refreshToken(RefreshRequestDTO refreshToken) {
         String token = refreshToken.refreshToken();
+        String nombreUsuario;
 
         try {
-            String nombreUsuario = jwtService.obtenerNombreUsuario(token);
-
-            Usuario usuario = usuariosRepository.findByNombre(nombreUsuario)
-                    .orElseThrow(() -> new UsuarioNoEncontradoException(nombreUsuario));
-
-            if (!jwtService.esRefreshTokenValido(token, usuario)) {
-                throw new RuntimeException("Refresh token invalido o expirado");
-            }
-
-            String nuevoJwtToken = jwtService.generarToken(usuario);
-            String nuevoRefreshToken = jwtService.generarRefreshToken(usuario);
-
-            return new TokenResponseDTO(nuevoJwtToken, nuevoRefreshToken);
-
+            nombreUsuario = jwtService.obtenerNombreUsuario(token);
         } catch (Exception e) {
-            throw new SesionExpiradaException();
+            throw new RuntimeException(e.getMessage());
         }
+
+        Usuario usuario = usuariosRepository.findByNombre(nombreUsuario)
+                .orElseThrow(() -> new UsuarioNoEncontradoException(nombreUsuario));
+
+        if (!jwtService.esRefreshTokenValido(token, usuario)) {
+            throw new RuntimeException("Refresh token invalido o expirado");
+        }
+
+        String nuevoJwtToken = jwtService.generarToken(usuario);
+        String nuevoRefreshToken = jwtService.generarRefreshToken(usuario);
+
+        return new TokenResponseDTO(nuevoJwtToken, nuevoRefreshToken);
     }
 
 }
