@@ -18,7 +18,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(@Valid @RequestBody AuthRequestDTO request) {
-        System.out.println("--> ¡LA PETICIÓN LLEGÓ AL CONTROLADOR! Nombre: " + request.username());
         return ResponseEntity.ok(authService.login(request));
     }
 
