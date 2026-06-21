@@ -16,27 +16,28 @@ import java.util.Date;
 public class JwtService {
 
     private final SecretKey secretKey;
-    private final long tiempoExpiracion;
-    private final long tiempoExpiracionRefreshToken;
+    private final int tiempoExpiracion;
+    private final int tiempoExpiracionRefreshToken;
 
-    public JwtService(@Value("${app.jwt.secret}") String secretKey, @Value("${app.jwt.expiration-time}") long tiempoExpiracion, @Value("${app.jwt.refresh-expiration-time}") long tiempoExpiracionRefreshToken) {
+    public JwtService(@Value("${app.jwt.secret}") String secretKey, @Value("${app.jwt.expiration-time}") int tiempoExpiracion, @Value("${app.jwt.refresh-expiration-time}") int tiempoExpiracionRefreshToken) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.tiempoExpiracion = tiempoExpiracion;
         this.tiempoExpiracionRefreshToken = tiempoExpiracionRefreshToken;
     }
 
     public String generarToken(Usuario usuario) {
-        return buildToken(usuario, tiempoExpiracion);
+        return buildToken(usuario, tiempoExpiracion, "access_token");
     }
 
     public String generarRefreshToken(Usuario usuario) {
-        return buildToken(usuario, tiempoExpiracionRefreshToken);
+        return buildToken(usuario, tiempoExpiracionRefreshToken, "refresh_token");
     }
 
-    private String buildToken(Usuario usuario, long expiracion) {
+    private String buildToken(Usuario usuario, int expiracion, String tipo) {
         return Jwts.builder()
                 .subject(usuario.getNombre())
                 .claim("rol", usuario.getRol().toString())
+                .claim("type", tipo)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiracion))
                 .signWith(secretKey)
@@ -44,30 +45,37 @@ public class JwtService {
     }
 
     public boolean esTokenValido(String token, UserDetails userDetails) {
-        Claims claims = obtenerClaims(token);
+        try {
+            Claims claims = obtenerClaims(token);
 
-        boolean esUsuarioValido = userDetails.getUsername().equals(claims.getSubject());
-        boolean esRolValido = userDetails.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority()
-                        .equals("ROLE_" + claims.get("rol")));
+            boolean esTipoAccessToken = claims.get("type").equals("access_token");
+            boolean esUsuarioValido = userDetails.getUsername().equals(claims.getSubject());
+            boolean esRolValido = userDetails.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority()
+                            .equals("ROLE_" + claims.get("rol")));
 
 
-        boolean esTokenExpirado = estaVigente(token);
+            boolean esTokenExpirado = estaVigente(token);
 
-        return esUsuarioValido && esRolValido && esTokenExpirado;
+            return esUsuarioValido && esRolValido && esTokenExpirado && esTipoAccessToken;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public boolean esRefreshTokenValido(String token, UserDetails usuario) {
         try {
             Claims claims = obtenerClaims(token);
 
+            boolean esTipoRefreshToken = claims.get("type").equals("refresh_token");
             boolean esUsuarioValido = usuario.getUsername().equals(claims.getSubject());
             boolean estaVigente = estaVigente(token);
             boolean esRolValido = usuario.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority()
                             .equals("ROLE_" + claims.get("rol")));
 
-            return esUsuarioValido && esRolValido && estaVigente;
+            return esUsuarioValido && esRolValido && estaVigente && esTipoRefreshToken;
 
         } catch (Exception e) {
             return false;
