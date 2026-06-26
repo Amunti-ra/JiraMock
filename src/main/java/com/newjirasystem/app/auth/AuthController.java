@@ -23,8 +23,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<TokenResponseDTO> register(@Valid @RequestBody RegisterRequestDTO request) {
-        return ResponseEntity.ok(authService.register(request));
+        TokenResponseDTO tokenResponseDTO = authService.register(request);
 
+        return ResponseEntity.status(201).body(tokenResponseDTO);
     }
 
     @PostMapping("/refresh")
