@@ -113,4 +113,15 @@ public class GlobalExceptionHandler {
                         Instant.now()
                 ));
     }
+
+    @ExceptionHandler(TokenInvalidoException.class)
+    public ResponseEntity<ErrorResponse> handleTokenInvalidoException(TokenInvalidoException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(
+                        "TOKEN_INVALIDO",
+                        ex.getMessage(),
+                        401,
+                        Instant.now()
+                ));
+    }
 }
