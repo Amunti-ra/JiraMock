@@ -2,6 +2,7 @@ package com.newjirasystem.app.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -80,11 +81,33 @@ public class GlobalExceptionHandler {
                 .body(error);
     }
 
-    @ExceptionHandler(CredencialesInvalidasException.class)
-    public ResponseEntity<ErrorResponse> handleCredencialesInvalidas(CredencialesInvalidasException ex) {
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse(
                         "UNAUTHORIZED",
+                        "No se ha encontrado un usuario con las credenciales proporcionadas",
+                        401,
+                        Instant.now()
+                ));
+    }
+
+    @ExceptionHandler(UsuarioDuplicadoException.class)
+    public ResponseEntity<ErrorResponse> handleUsuarioDuplicadoException(UsuarioDuplicadoException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(
+                        "CONFLICT",
+                        ex.getMessage(),
+                        409,
+                        Instant.now()
+                ));
+    }
+
+    @ExceptionHandler(SesionExpiradaException.class)
+    public ResponseEntity<ErrorResponse> handleSesionExpiradaException(SesionExpiradaException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(
+                        "SESSION_EXPIRED",
                         ex.getMessage(),
                         401,
                         Instant.now()
