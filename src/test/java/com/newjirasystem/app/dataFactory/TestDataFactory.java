@@ -28,7 +28,7 @@ public class TestDataFactory {
     }
 
     public static Usuario crearUsuario() {
-        return new Usuario("test", Rol.USER, "12345");
+        return new Usuario("test", Rol.USER,"testPassword");
     }
 
     public static Proyecto crearProyecto() {
@@ -119,7 +119,7 @@ public class TestDataFactory {
                 1L,
                 "texto test",
                 1L,
-                "nombre test",
+                "username test",
                 LocalDateTime.of(2026, 6, 14,12, 0, 0),
                 LocalDateTime.now()
         );
@@ -131,7 +131,7 @@ public class TestDataFactory {
                         1L,
                         "texto test",
                         1L,
-                        "nombre test",
+                        "username test",
                         LocalDateTime.of(2026, 6, 14,12, 0, 0),
                         LocalDateTime.now()
                 ),
@@ -139,7 +139,7 @@ public class TestDataFactory {
                         2L,
                         "texto test",
                         1L,
-                        "nombre test",
+                        "username test",
                         LocalDateTime.of(2026, 6, 14,12, 0, 0),
                         LocalDateTime.now()
                 )

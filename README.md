@@ -49,15 +49,15 @@ I'm actively developing this project as part of my effort to progress into the r
 - [x] Dynamic Queries (JPA Specifications)
 - [x] Unit testing
 - [x] Integration testing
+- [x] Docker
 
 
 
 ### In progress:
-- [ ] Docker 
-
-### Planned:
 - [ ] Security
 - [ ] JWT
+
+### Planned:
 - [ ] CI/CD
 - [ ] Deployment to a dedicated Linux server
 
