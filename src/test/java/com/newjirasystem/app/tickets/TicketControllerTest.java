@@ -6,9 +6,11 @@ import com.newjirasystem.app.comentarios.ComentarioService;
 import com.newjirasystem.app.dataFactory.TestDataFactory;
 import com.newjirasystem.app.exception.ProyectoNoEncontradoException;
 import com.newjirasystem.app.exception.TicketNoEncontradoException;
+import com.newjirasystem.app.auth.CustomSecCheck;
 import com.newjirasystem.app.exception.UsuarioNoEncontradoException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -26,9 +28,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(value = TicketController.class,
-        excludeAutoConfiguration = {SecurityAutoConfiguration.class,
-                UserDetailsServiceAutoConfiguration.class})
+@WebMvcTest(value = TicketController.class)
 class TicketControllerTest {
 
     @Autowired
@@ -46,9 +46,11 @@ class TicketControllerTest {
     @MockitoBean
     JwtService jwtService;
 
-
+    @MockitoBean
+    CustomSecCheck customSecCheck;
 
     @Test
+    @WithMockUser
     void getTickets_WhenRequestIsValid_ShouldReturnListOfTicketsAnd200OK() throws Exception {
         List<TicketDTO> lista = TestDataFactory.crearListaTicketDTO();
         when(ticketService.getFilteredTickets(any(), any(), any(), any())).thenReturn(lista);
@@ -66,6 +68,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getTickets_WhenUsuarioDoesNotExist_ShouldReturn404NotFound() throws Exception {
         when(ticketService.getFilteredTickets(eq(999L), any(), any(), any())).thenThrow(new UsuarioNoEncontradoException(999L));
 
@@ -76,6 +79,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getTickets_WhenProyectoDoesNotExist_ShouldReturn404NotFound() throws Exception {
         when(ticketService.getFilteredTickets(any(), eq(999L), any(), any())).thenThrow(new ProyectoNoEncontradoException(999L));
 
@@ -87,6 +91,7 @@ class TicketControllerTest {
 
 
     @Test
+    @WithMockUser
     void getTicketByIdWhenTicketExists_ShouldReturnTicketDTOAnd200OK() throws Exception {
         TicketDTO dto = TestDataFactory.crearTicketDto();
 
@@ -101,6 +106,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getTicketById_WhenTicketDoesNotExist_ShouldReturn404TicketNotFound() throws Exception {
         when(ticketService.getTicketById(999L)).thenThrow(new TicketNoEncontradoException(999L));
 
@@ -112,6 +118,7 @@ class TicketControllerTest {
 
 
     @Test
+    @WithMockUser
     void postTicket_WhenDataIsValid_ShouldReturnTicketDTOAnd201Created() throws Exception{
         TicketDTO ticketDTO = TestDataFactory.crearTicketDto();
         String entrada =  """
@@ -140,6 +147,7 @@ class TicketControllerTest {
     }
 
     @ParameterizedTest
+    @WithMockUser
     @ValueSource(strings = {
             "   ",
             "",
@@ -168,6 +176,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void postTicket_WhenRequiredFieldsAreMissing_ShouldReturn400BadRequest() throws Exception {
         String entrada = """
                 {
@@ -185,6 +194,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void postTicket_WhenEnumValuesAreInvalid_ShouldReturn400BadRequest() throws Exception {
         String entrada = """
                 {
@@ -207,6 +217,7 @@ class TicketControllerTest {
 
 
     @Test
+    @WithMockUser
     void patchTicketById_WhenTituloIsValid_ShouldTicketDTOAndReturn200OK() throws Exception {
         String entrada = """
                 {
@@ -235,6 +246,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void patchTicketById_TicketDoesNotExist_ShouldReturn404NotFound() throws Exception {
         String entrada = """
                 {
@@ -256,6 +268,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void patchTicketById_WhenTituloIsNotValid_ShouldReturn400BadRequest() throws Exception {
         String tituloLargo = "A".repeat(151);
 
@@ -279,6 +292,7 @@ class TicketControllerTest {
 
 
     @Test
+    @WithMockUser
     void deleteTicketById_WhenTicketExists_ShouldReturn204NoContent() throws Exception{
         mockMvc.perform(delete("/tickets/1")).andExpect(status().isNoContent());
 
@@ -286,6 +300,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void deleteTicketById_WhenTicketDoesNotExist_ShouldReturn404NotFound() throws Exception {
         doThrow(new TicketNoEncontradoException(1L)).when(ticketService).deleteTicketById(1L);
 
@@ -297,6 +312,7 @@ class TicketControllerTest {
 
 
     @Test
+    @WithMockUser
     void postComentario_WhenTicketExistsAndDataIsValid_ShouldComentarioDTOReturn201Created() throws Exception {
         String entrada = """
                 {
@@ -321,6 +337,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void postComentario_WhenTicketExistsAndDataIsInvalid_ShouldReturn400BadRequest() throws Exception {
         String texto = "A".repeat(501);
 
@@ -338,6 +355,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void postComentario_WhenUsuarioDoesNotExist_ShouldReturn404NotFound() throws Exception{
         String entrada = """
                 {
@@ -356,6 +374,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void postComentario_WhenTicketDoesNotExistExist_ShouldReturn404NotFound() throws Exception {
         String entrada = """
                 {
@@ -376,6 +395,7 @@ class TicketControllerTest {
 
 
     @Test
+    @WithMockUser
     void getComentariosByTicketId_WhenTicketExists_ShouldReturnComentarioDTOListAnd200OK() throws Exception {
         List<ComentarioDTO> lista = TestDataFactory.crearListaComentarioDTO();
 
@@ -390,6 +410,7 @@ class TicketControllerTest {
     }
 
     @Test
+    @WithMockUser
     void getComentariosByTicketId_WhenTicketDoesNotExist_ShouldReturn404NotFound() throws Exception {
         when(comentarioService.getComentariosByTicketId(1L)).thenThrow(new TicketNoEncontradoException(1L));
 
