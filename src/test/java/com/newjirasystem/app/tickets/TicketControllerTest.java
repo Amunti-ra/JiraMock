@@ -219,6 +219,8 @@ class TicketControllerTest {
     @Test
     @WithMockUser
     void patchTicketById_WhenTituloIsValid_ShouldTicketDTOAndReturn200OK() throws Exception {
+        when(customSecCheck.esCreadorTicket(anyLong(), anyString())).thenReturn(true);
+
         String entrada = """
                 {
                     "titulo": "test titulo actualizado",
@@ -248,6 +250,8 @@ class TicketControllerTest {
     @Test
     @WithMockUser
     void patchTicketById_TicketDoesNotExist_ShouldReturn404NotFound() throws Exception {
+        when(customSecCheck.esCreadorTicket(anyLong(), anyString())).thenReturn(true);
+
         String entrada = """
                 {
                     "titulo": "test titulo actualizado",
@@ -270,6 +274,8 @@ class TicketControllerTest {
     @Test
     @WithMockUser
     void patchTicketById_WhenTituloIsNotValid_ShouldReturn400BadRequest() throws Exception {
+        when(customSecCheck.esCreadorTicket(anyLong(), anyString())).thenReturn(true);
+
         String tituloLargo = "A".repeat(151);
 
         String entrada = """
@@ -294,6 +300,8 @@ class TicketControllerTest {
     @Test
     @WithMockUser
     void deleteTicketById_WhenTicketExists_ShouldReturn204NoContent() throws Exception{
+        when(customSecCheck.esCreadorTicket(anyLong(), anyString())).thenReturn(true);
+
         mockMvc.perform(delete("/tickets/1")).andExpect(status().isNoContent());
 
         verify(ticketService, times(1)).deleteTicketById(1L);
@@ -302,6 +310,7 @@ class TicketControllerTest {
     @Test
     @WithMockUser
     void deleteTicketById_WhenTicketDoesNotExist_ShouldReturn404NotFound() throws Exception {
+        when(customSecCheck.esCreadorTicket(anyLong(), anyString())).thenReturn(true);
         doThrow(new TicketNoEncontradoException(1L)).when(ticketService).deleteTicketById(1L);
 
         mockMvc.perform(delete("/tickets/1"))
