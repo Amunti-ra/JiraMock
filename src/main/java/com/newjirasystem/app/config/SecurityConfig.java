@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -61,6 +62,9 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                                 ).permitAll()
                         .anyRequest().authenticated())
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) ->
+                                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED)))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
