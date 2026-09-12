@@ -296,11 +296,25 @@ class TicketControllerTest {
     }
 
     @Test
-    @WithMockUser
     void postTicket_WhenUserIsAnonymous_ShouldReturn401Unauthorized() throws Exception {
-                        mockMvc.perform(post("/tickets")
-                        .with(csrf()))
+        String entrada = """                                                                                                                                                                                                                                                                                        
+                {
+                    "titulo": "test titulo",
+                    "descripcion": "test descripcion",
+                    "idCreador": "1",
+                    "idProyecto": "1",
+                    "prioridad": "LOW",
+                    "tipo": "BUG"
+                }
+                """;
+
+        mockMvc.perform(post("/tickets")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(entrada))
                 .andExpect(status().isUnauthorized());
+
+        verify(ticketService, never()).postTicket(any());
     }
 
 
@@ -387,7 +401,7 @@ class TicketControllerTest {
                         .content(entrada))
                 .andExpect(status().isBadRequest());
 
-        verify(ticketService, never()).patchTicketById(1L, null);
+        verify(ticketService, never()).patchTicketById(eq(1L), any());
     }
 
     @Test
@@ -414,7 +428,7 @@ class TicketControllerTest {
                         .content(entrada))
                 .andExpect(status().isForbidden());
 
-        verify(ticketService, never()).patchTicketById(1L, null);
+        verify(ticketService, never()).patchTicketById(eq(1L), any());
     }
 
     @Test
@@ -439,7 +453,7 @@ class TicketControllerTest {
                         .content(entrada))
                 .andExpect(status().isForbidden());
 
-        verify(ticketService, never()).patchTicketById(1L, null);
+        verify(ticketService, never()).patchTicketById(eq(1L), any());
     }
 
     @Test
@@ -522,6 +536,22 @@ class TicketControllerTest {
     }
 
 
+
+    @Test
+    void postComentario_WhenAnonymous_ShouldReturn401Unauthorized() throws Exception {
+        String entrada = """
+                {
+                    "texto": "texto test",
+                    "idAutor": 1
+                }
+                """;
+
+        mockMvc.perform(post("/tickets/1/comentarios")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(entrada))
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     @WithMockUser
@@ -626,6 +656,12 @@ class TicketControllerTest {
     }
 
 
+
+    @Test
+    void getComentariosByTicketId_WhenAnonymous_ShouldReturn401Unauthorized() throws Exception {
+        mockMvc.perform(get("/tickets/1/comentarios"))
+                .andExpect(status().isUnauthorized());
+    }
 
     @Test
     @WithMockUser
