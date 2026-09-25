@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -103,6 +104,7 @@ public class TicketController {
             @ApiResponse(responseCode = "404", description = "NOT_FOUND Ticket que se quiere actualizar no encontrado", content = @Content)})
     @PatchMapping("/{id}")
     @Tag(name = "Tickets")
+    @PreAuthorize("@customSecCheck.esCreadorTicket(#id, authentication.name)")
     public ResponseEntity<TicketDTO> patchTicketById(@PathVariable Long id, @Valid @RequestBody ActualizarTicketDTO actualizarTicketDTO) {
         TicketDTO ticketActualizado = ticketService.patchTicketById(id, actualizarTicketDTO);
 
@@ -115,6 +117,7 @@ public class TicketController {
             @ApiResponse(responseCode = "404", description = "NOT_FOUND Ticket que se quiere eliminar no encontrado", content = @Content)})
     @DeleteMapping("/{id}")
     @Tag(name = "Tickets")
+    @PreAuthorize("hasRole('ADMIN') or @customSecCheck.esCreadorTicket(#id, authentication.name)")
     public ResponseEntity<Void> deleteTicketById(@PathVariable Long id) {
         ticketService.deleteTicketById(id);
 

@@ -41,7 +41,7 @@ public class JwtService {
 
         return Jwts.builder()
                 .subject(usuario.getNombre())
-                .claim("rol", usuario.getRol().toString())
+                .claim("rol", usuario.getAuthorities().iterator().next().getAuthority())
                 .claim("type", tipo)
                 .issuedAt(Date.from(ahora))
                 .expiration(Date.from(fechaExpiracion))
@@ -57,7 +57,7 @@ public class JwtService {
             boolean esUsuarioValido = userDetails.getUsername().equals(claims.getSubject());
             boolean esRolValido = userDetails.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority()
-                            .equals("ROLE_" + claims.get("rol")));
+                            .equals(claims.get("rol")));
 
 
             return esUsuarioValido && esRolValido && esTipoAccessToken;
@@ -75,7 +75,7 @@ public class JwtService {
             boolean esUsuarioValido = usuario.getUsername().equals(claims.getSubject());
             boolean esRolValido = usuario.getAuthorities().stream()
                     .anyMatch(a -> a.getAuthority()
-                            .equals("ROLE_" + claims.get("rol")));
+                            .equals(claims.get("rol")));
 
             return esUsuarioValido && esRolValido && esTipoRefreshToken;
 
