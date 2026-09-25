@@ -50,15 +50,16 @@ I'm actively developing this project as part of my effort to progress into the r
 - [x] Unit testing
 - [x] Integration testing
 - [x] Docker
+- [x] Security
+- [x] JWT
 
 
 
 ### In progress:
-- [ ] Security
-- [ ] JWT
-
-### Planned:
 - [ ] CI/CD
+- [ ] Observability
+
+### Planned:  
 - [ ] Deployment to a dedicated Linux server
 
 
